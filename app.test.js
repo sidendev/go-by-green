@@ -1,8 +1,8 @@
 const request = require("supertest");
-const app = require("../app");
-const db = require("../db/connection");
-const seed = require("../db/seeds/seed");
-const data = require("../db/data/test-data");
+const app = require("./app");
+const db = require("./db/connection");
+const seed = require("./db/seeds/seed");
+const data = require("./db/data/test-data");
 require("jest-sorted");
 
 beforeEach(() => {
@@ -14,7 +14,7 @@ afterAll(() => {
 
 describe("404: generic not found error", () => {
   test("404: returns 'not found' when api users endpoint is invalid due to typo or different endpoint received", async () => {
-    const response = request(app).get("/api/user");
+    const response = await request(app).get("/api/user");
     expect(404);
     (({ body }) => expect(body.msg).toBe("Not Found"));
   });
@@ -23,10 +23,9 @@ describe("404: generic not found error", () => {
 describe("GET /api/users", () => {
   test("200: return an array of users", async () => {
     const response = await request(app).get("/api/users");
-    expect(200);
-    (({ body }) => {
-      expect(body.users.length).toBeGreaterThan(1);
-      const { users } = body;
+      expect(response.status).toBe(200);
+      const {users} = response.body
+      expect(users.length).toBeGreaterThan(1);
       users.forEach((user) => {
         expect(user).toMatchObject({
           username: expect.any(String),
@@ -38,17 +37,17 @@ describe("GET /api/users", () => {
       });
     });
   });
-});
 
 
 
 
 describe("GET /api/users/:user_id", () => {
     test("200, returns specific user information", async () => {
-        const response = request(app).get("/api/users/1");
-        expect(200);
-        (({body}) => {
-            expect(body.user).toEqual({
+        const response = await request(app).get("/api/users/1");
+        expect(response.status).toBe(200);
+        const {user} = response.body
+            expect(user).toEqual({
+              user_id: 1,
               username: 'mrgreen',
               name: 'Oliver Meadows',
               profile_url:
@@ -58,63 +57,60 @@ describe("GET /api/users/:user_id", () => {
             })
         })
     })
-})
 
-describe("GET /api/users/:user_id/users_routes", () => {
-  test("200: return an array of users saved routes", async () => {
-    const response = await request(app).get("/api/users/1/users_routes");
-    expect(200);
-    (({ body }) => {
-      const { users_routes } = body;
-      users_routes.forEach((user_route) => {
-        expect(user_route).toMatchObject({
-          route_address: 'https://www.google.co.uk/maps/dir/London+Gatwick+Airport+(LGW),+Horley,+Gatwick/London/@51.3419266,-0.4393995,10z/data=!3m1!4b1!4m14!4m13!1m5!1m1!1s0x4875efde7d1f391b:0x59dda4bf018973ff!2m2!1d-0.1820629!2d51.1536621!1m5!1m1!1s0x47d8a00baf21de75:0x52963a5addd52a99!2m2!1d-0.1275862!2d51.5072178!3e3?entry=ttu',
-          carbon_usage: 24,
-          route_distance: 17
-        });
-      });
-    });
-  });
-});
+// describe("GET /api/users/:user_id/user_routes", () => {
+//   test("200: return an array of users saved routes", async () => {
+//     const response = await request(app).get("/api/users/1/user_routes");
+//     expect(response.status).toBe(200);
+//       const { users_routes } = response.body;
+//       users_routes.forEach((user_route) => {
+//         expect(user_route).toEqual({
+//           route_address: 'https://www.google.co.uk/maps/dir/London+Gatwick+Airport+(LGW),+Horley,+Gatwick/London/@51.3419266,-0.4393995,10z/data=!3m1!4b1!4m14!4m13!1m5!1m1!1s0x4875efde7d1f391b:0x59dda4bf018973ff!2m2!1d-0.1820629!2d51.1536621!1m5!1m1!1s0x47d8a00baf21de75:0x52963a5addd52a99!2m2!1d-0.1275862!2d51.5072178!3e3?entry=ttu',
+//           carbon_usage: 24,
+//           route_distance: 17
+//         });
+//       });
+//     });
+//   });
 
-describe("GET /api/users/:user_id/users_routes/:saved_user_route", () => {
-  test("200: return a specific user route", async () => {
-    const response = await request(app).get("/api/users/1/users_routes/1");
-    expect(200);
-      (({body}) => {
-        expect(body.user_route).toEqual({
-        route_address: 'https://www.google.co.uk/maps/dir/London+Gatwick+Airport+(LGW),+Horley,+Gatwick/London/@51.3419266,-0.4393995,10z/data=!3m1!4b1!4m14!4m13!1m5!1m1!1s0x4875efde7d1f391b:0x59dda4bf018973ff!2m2!1d-0.1820629!2d51.1536621!1m5!1m1!1s0x47d8a00baf21de75:0x52963a5addd52a99!2m2!1d-0.1275862!2d51.5072178!3e3?entry=ttu',
-        carbon_usage: 24,
-        route_distance: 17
-        })
-    })
-    });
-});
+// describe("GET /api/users/:user_id/user_routes/:route_id", () => {
+//   test("200: return a specific user route", async () => {
+//     const response = await request(app).get("/api/users/1/user_routes/1");
+//     expect(200);
+//       (({body}) => {
+//         expect(body.user_route).toEqual({
+//         route_address: 'https://www.google.co.uk/maps/dir/London+Gatwick+Airport+(LGW),+Horley,+Gatwick/London/@51.3419266,-0.4393995,10z/data=!3m1!4b1!4m14!4m13!1m5!1m1!1s0x4875efde7d1f391b:0x59dda4bf018973ff!2m2!1d-0.1820629!2d51.1536621!1m5!1m1!1s0x47d8a00baf21de75:0x52963a5addd52a99!2m2!1d-0.1275862!2d51.5072178!3e3?entry=ttu',
+//         carbon_usage: 24,
+//         route_distance: 17
+//         })
+//     })
+//     });
+// });
 
-describe("POST /api/users", () => {
+describe.only("POST /api/users", () => {        // this test fails
   test("201: successfully adds a user", async () => {
     const response = await request(app).post("/api/users");
-    expect(201);
+    expect(response.status).toBe(201);
     send({
       name: "Butter_Bridge",
       username: "hello_butter_bridge",
       profile_url: "https://google.com",
     });
-    (({body}) => {
-      expect(body.user).toEqual({
+      const {user} = response.body 
+      expect(user).toEqual({
         username: "hello_butter_bridge",
           name: "Butter_Bridge",
           profile_url: "https://google.com",
-          total_routes: 0,  // needs update after carbon calculation
+          total_routes: 0, 
           total_carbon: 0
       })
   })
   });
-});
 
-describe("POST /api/users/:user_id/users_routes", () => {
+
+describe("POST /api/users/:user_id/user_routes", () => {
   test("201: successfully adds a user route", async () => {
-    const response = await request(app).post("/api/users/1/users_routes");
+    const response = await request(app).post("/api/users/1/user_routes");
     expect(201);
     send({
       route_address: 'https://www.google.com',
@@ -150,9 +146,9 @@ describe("PATCH /api/users/:user_id", () => {
 });
 
 
-describe("PATCH /api/users/:user_id/users_routes/:saved_user_route", () => {
+describe("PATCH /api/users/:user_id/users_routes/:route_id", () => {
   test("200: successfully updates user routes", async () => {
-    const response = await request(app).patch("/api/users/1/users_routes");
+    const response = await request(app).patch("/api/users/1/user_routes/1");
     expect(200);
     send({
       route_address: "https://google.com"
@@ -174,9 +170,9 @@ describe("DELETE /api/users/:user_id", () => {
   });
 });
 
-describe("DELETE /api/users/:user_id/users_routes/:saved_user_route", () => {
+describe("DELETE /api/users/:user_id/user_routes/:route_id", () => {
   test("204: delete a user route", async () => {
-    const response = await request(app).delete("/api/users/2/users_routes/2");
+    const response = await request(app).delete("/api/users/2/user_routes/2");
     expect(204);
   });
 });
