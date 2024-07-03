@@ -9,45 +9,44 @@ const seed = ({ usersData, userRoutesData }) => {
     })
     .then(() => {
       const usersTablePromise = db.query(`
-      CREATE TABLE users (
-        user_id SERIAL PRIMARY KEY,
-        username VARCHAR,
-        name VARCHAR,
-        profile_url VARCHAR,
-        total_routes INT DEFAULT 0 NOT NULL,
-        total_carbon INT DEFAULT 0 NOT NULL
-      );`);
+       CREATE TABLE users (
+          user_id SERIAL PRIMARY KEY,
+          username VARCHAR NOT NULL,
+          name VARCHAR NOT NULL,
+          profile_url VARCHAR,
+          total_routes INT DEFAULT 0 NOT NULL,
+          total_carbon INT DEFAULT 0 NOT NULL
+        );`);
 
-      const userRoutesTablePromise = db.query(`
-      CREATE TABLE user_routes (
-        route_id SERIAL PRIMARY KEY,
-        user_id INT REFERENCES users(user_id) NOT NULL,
-        route_address VARCHAR,
-        carbon_usage INT DEFAULT 0 NOT NULL,
-        route_distance INT DEFAULT 0 NOT NULL
-      );`);
-
-      return Promise.all([userRoutesTablePromise, usersTablePromise]);
+      return usersTablePromise.then(() => {
+        return db.query(`
+          CREATE TABLE user_routes (
+            route_id SERIAL PRIMARY KEY,
+            user_id INT NOT NULL,
+            route_address VARCHAR NOT NULL,
+            carbon_usage INT DEFAULT 0 NOT NULL,
+            route_distance INT DEFAULT 0 NOT NULL
+          );`);
+      });
     })
     .then(() => {
       const insertUsersQueryStr = format(
-        "INSERT INTO users ( username, name, profile_url, total_routes, total_carbon  ) VALUES %L;",
-        usersData.map(
-          ({
-            username,
-            name,
-            profile_url,
-            total_routes,
-            total_carbon,
-          }) => [username, name, profile_url, total_routes, total_carbon]
-        )
+        "INSERT INTO users (username, name, profile_url, total_routes, total_carbon) VALUES %L;",
+        usersData.map(({ username, name, profile_url, total_routes, total_carbon }) => [
+          username,
+          name,
+          profile_url,
+          total_routes,
+          total_carbon,
+        ])
       );
       const usersPromise = db.query(insertUsersQueryStr);
 
       const insertUserRoutesQueryStr = format(
-        "INSERT INTO user_routes ( route_address, carbon_usage, route_distance) VALUES %L;",
+        "INSERT INTO user_routes (user_id, route_address, carbon_usage, route_distance) VALUES %L;",
         userRoutesData.map(
-          ({ route_address, carbon_usage, route_distance }) => [
+          ({user_id, route_address, carbon_usage, route_distance }) => [
+            user_id,
             route_address,
             carbon_usage,
             route_distance,
@@ -55,6 +54,7 @@ const seed = ({ usersData, userRoutesData }) => {
         )
       );
       const userRoutesPromise = db.query(insertUserRoutesQueryStr);
+
 
       return Promise.all([usersPromise, userRoutesPromise]);
     });
