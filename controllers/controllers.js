@@ -32,6 +32,7 @@ exports.getUserById = async (req, res, next) => {
 
 exports.getUserRoutes = async (req, res, next) => {
     const {user_id} = req.params
+    console.log(req.params, "<< REQ PARAM")
     try {
         const routes = await selectUserRoutes(user_id);
         res.status(200).send({ routes });
@@ -51,14 +52,16 @@ exports.getRouteById = async (req, res, next) => {
 };
 
 exports.createUser = async (req, res, next) => {
-    const {name, username, profile_url} = req.body
+    const newUser = req.body
     try {
-        const newUser = await makeUser(name, username, profile_url);
+        const newUserDetails = await makeUser(newUser);
         res.status(201).send({ 
-            user_id: newUser.user_id,
-            name: newUser.name,
-            username: newUser.username,
-            profile_url: newUser.profile_url
+            user_id: newUserDetails.user_id,
+            username: newUserDetails.username,
+            name: newUserDetails.name,
+            profile_url: newUserDetails.profile_url,
+            total_routes: newUserDetails.total_routes,
+            total_carbon: newUserDetails.total_carbon
          });
       } catch (err) {
         next(err);
@@ -66,9 +69,10 @@ exports.createUser = async (req, res, next) => {
 };
 
 exports.createUserRoute = async (req, res, next) => {
-    const {route_address, carbon_usage, route_distance} = req.body
+  const {user_id} = req.params
+    const newRouteInfo = req.body
     try {
-        const newRoute = await makeUserRoute(route_address, carbon_usage, route_distance);
+        const newRoute = await makeUserRoute(user_id, newRouteInfo);
         res.status(201).send({ 
           route_id: newRoute.route_id,
           route_address: newRoute.route_address,
