@@ -105,7 +105,7 @@ describe("POST /api/users", () => {
   });
 });
 
-describe.only("POST /api/users/:user_id/saved_user_routes", () => {
+describe("POST /api/users/:user_id/saved_user_routes", () => {
   test("201: successfully adds a user route", async () => {
     const response = await request(app).post("/api/users/1/saved_user_routes").send({
       route_address: "https://www.google.com",
@@ -122,13 +122,15 @@ describe.only("POST /api/users/:user_id/saved_user_routes", () => {
     });
   });
 
-describe.only("PATCH /api/users/:user_id", () => {
+describe("PATCH /api/users/:user_id", () => {
   test("200: successfully updates one single changeable item of user information", async () => {
     const response = await request(app).patch("/api/users/1").send({
       name: "Arthur",
     });
     expect(response.status).toBe(200);
-    expect(response.body.user).toEqual({
+    console.log(response.body)
+    expect(response.body).toEqual({
+        user_id: 1,
         username: "mrgreen",
         name: "Arthur",
         profile_url:
@@ -145,7 +147,8 @@ describe.only("PATCH /api/users/:user_id", () => {
         profile_url: "https://www.google.com"
       });
       expect(response.status).toBe(200);
-      expect(response.body.user).toEqual({
+      expect(response.body).toEqual({
+        user_id: 1,
         name: "Katie",
         username: "katie123",
         profile_url: "https://www.google.com",
@@ -157,31 +160,33 @@ describe.only("PATCH /api/users/:user_id", () => {
 
 describe("PATCH /api/users/:user_id/users_routes/:route_id", () => {
   test("200: successfully updates user routes", async () => {
-    const response = await request(app).patch("/api/users/1/user_routes/1");
-    expect(200);
-    send({
+    const response = await request(app).patch("/api/users/1/user_routes/1")
+    .send({
       route_address: "https://google.com",
+      carbon_usage: 24,
+      route_distance: 17
     });
-    ({ body }) => {
-      expect(body.user_route).toEqual({
+      expect(response.status).toBe(200);
+      console.log(response.body)
+      expect(response.body).toEqual({
+        route_id: 1,
         route_address: "https://google.com",
         carbon_usage: 24,
-        route_distance: 17,
+        route_distance: 17
       });
-    };
+    });
   });
-});
 
 describe("DELETE /api/users/:user_id", () => {
   test("204: delete a user", async () => {
     const response = await request(app).delete("/api/users/2");
-    expect(204);
+    expect(response.status).toBe(204);
   });
 });
 
-describe("DELETE /api/users/:user_id/user_routes/:route_id", () => {
+describe.only("DELETE /api/users/:user_id/user_routes/:route_id", () => {
   test("204: delete a user route", async () => {
     const response = await request(app).delete("/api/users/2/user_routes/2");
-    expect(204);
+    expect(response.status).toBe(204);
   });
 });
