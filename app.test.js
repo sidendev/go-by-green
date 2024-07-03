@@ -109,27 +109,26 @@ describe.only("POST /api/users/:user_id/saved_user_routes", () => {
   test("201: successfully adds a user route", async () => {
     const response = await request(app).post("/api/users/1/saved_user_routes").send({
       route_address: "https://www.google.com",
+      carbon_usage: 22, //needs to come from calculation in front end (API/hard coded)
+      route_distance: 33 //needs to come from gmaps api call
     });
-    expect(response.status).toBe(500);
-    console.log(response.body)
-      expect(response.body).toEqual({
+    expect(response.status).toBe(201);
+    expect(response.body).toEqual({
         user_id: 1,
         route_address: "https://www.google.com",
-        carbon_usage: 40, //needs update after carbon calculation
-        route_distance: 23, //needs update after distance calculation
+        carbon_usage: 22, //needs update after carbon calculation
+        route_distance: 33, //needs update after distance calculation
       });
     });
   });
 
-describe("PATCH /api/users/:user_id", () => {
-  test("200: successfully updates user information", async () => {
-    const response = await request(app).patch("/api/users/1");
-    expect(200);
-    send({
+describe.only("PATCH /api/users/:user_id", () => {
+  test("200: successfully updates one single changeable item of user information", async () => {
+    const response = await request(app).patch("/api/users/1").send({
       name: "Arthur",
     });
-    ({ body }) => {
-      expect(body.user).toEqual({
+    expect(response.status).toBe(200);
+    expect(response.body.user).toEqual({
         username: "mrgreen",
         name: "Arthur",
         profile_url:
@@ -137,9 +136,24 @@ describe("PATCH /api/users/:user_id", () => {
         total_routes: 10,
         total_carbon: 26,
       });
-    };
+    });
+
+    test("200: successfully updates multiple items of changeable user information", async () => {
+      const response = await request(app).patch("/api/users/1").send({
+        name: "Katie",
+        username: "katie123",
+        profile_url: "https://www.google.com"
+      });
+      expect(response.status).toBe(200);
+      expect(response.body.user).toEqual({
+        name: "Katie",
+        username: "katie123",
+        profile_url: "https://www.google.com",
+        total_routes: 10,
+        total_carbon: 26,
+        });
+      });
   });
-});
 
 describe("PATCH /api/users/:user_id/users_routes/:route_id", () => {
   test("200: successfully updates user routes", async () => {

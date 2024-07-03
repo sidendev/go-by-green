@@ -49,18 +49,40 @@ exports.makeUser = async (newUser) => {
 
 exports.makeUserRoute = async (user_id, newRouteInfo) => {
     const sqlQuery = `
-    INSERT INTO user_routes (user_id, route_address) VALUES ($1, $2)
+    INSERT INTO user_routes (user_id, route_address, carbon_usage, route_distance) VALUES ($1, $2, $3, $4)
     RETURNING *`
     
-    try {const {route_address} = newRouteInfo
-    const user_route = await db.query(sqlQuery, [user_id, route_address]);
+    try {const {route_address, carbon_usage, route_distance} = newRouteInfo
+    const user_route = await db.query(sqlQuery, [user_id, route_address, carbon_usage, route_distance]);
+    return user_route.rows[0]
     } catch (error){
-        console.errer("Error adding new route:",error);
+        console.error("Error adding new route:",error);
         throw error;
     }
 };
 
-exports.changeUser = async () => {};
+exports.changeUser = async (user_id, name, username, profile_url) => {
+  if (name === undefined && username === undefined && profile_url === undefined) {
+    return Promise.reject({status: 400, msg: "Bad request: you need to include changes to your user profile"})
+  }
+  let sqlQuery = `UPDATE users`
+  let queryValues = [user_id]
+  if (name) {
+    queryValues.push(name)
+    sqlQuery += ` SET name = $2`
+  }
+  if (username) {
+    queryValues.push(username)
+    sqlQuery += ` SET username = $3`
+  }
+  if (profile_url) {
+    queryValues.push(profile_url)
+    sqlQuery += ` SET profile_url = $4`
+  }
+  sqlQuery += ` WHERE user_id = $1 RETURNING *;`
+  const updatedUserInfo = await db.query(sqlQuery, queryValues)
+  return updatedUserInfo.rows[0]
+};
 
 exports.changeUserRoute = async () => {};
 

@@ -62,7 +62,7 @@ exports.createUser = async (req, res, next) => {
             profile_url: newUserDetails.profile_url,
             total_routes: newUserDetails.total_routes,
             total_carbon: newUserDetails.total_carbon
-         });
+          });
       } catch (err) {
         next(err);
       }
@@ -74,11 +74,11 @@ exports.createUserRoute = async (req, res, next) => {
     try {
         const newRoute = await makeUserRoute(user_id, newRouteInfo);
         res.status(201).send({ 
-          route_id: newRoute.route_id,
+          user_id: newRoute.user_id,
           route_address: newRoute.route_address,
           carbon_usage: newRoute.carbon_usage,
           route_distance: newRoute.route_distance
-         });
+          });
       } catch (err) {
         next(err);
       }
@@ -93,7 +93,7 @@ exports.patchUser = async (req, res, next) => {
             name: updatedUser.name,
             username: updatedUser.username,
             profile_url: updatedUser.profile_url
-         });
+        });
       } catch (err) {
         next(err);
       }
@@ -109,7 +109,7 @@ exports.patchUserRoute = async (req, res, next) => {
             route_address: updatedUser.route_address,
             carbon_usage: updatedUser.carbon_usage,
             route_distance: updatedUser.route_distance
-         });
+        });
       } catch (err) {
         next(err);
       }
