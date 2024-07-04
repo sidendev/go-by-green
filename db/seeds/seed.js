@@ -11,9 +11,9 @@ const seed = ({ usersData, userRoutesData }) => {
       const usersTablePromise = db.query(`
         CREATE TABLE users (
           user_id SERIAL PRIMARY KEY,
-          username VARCHAR NOT NULL,
-          name VARCHAR NOT NULL,
-          profile_url VARCHAR,
+          username TEXT NOT NULL,
+          name TEXT NOT NULL,
+          profile_url TEXT,
           total_routes INT DEFAULT 0 NOT NULL,
           total_carbon INT DEFAULT 0 NOT NULL
         );`);

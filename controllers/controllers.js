@@ -32,7 +32,6 @@ exports.getUserById = async (req, res, next) => {
 
 exports.getUserRoutes = async (req, res, next) => {
     const {user_id} = req.params
-    console.log(req.params, "<< REQ PARAM")
     try {
         const routes = await selectUserRoutes(user_id);
         res.status(200).send({ routes });
@@ -43,9 +42,16 @@ exports.getUserRoutes = async (req, res, next) => {
 
 exports.getRouteById = async (req, res, next) => {
     const {user_id, route_id} = req.params
+
     try {
         const route = await selectRouteById(user_id, route_id);
-        res.status(200).send({ route });
+        res.status(200).send({
+          route_id: route.route_id,
+          user_id: route.user_id,
+          route_address: route.route_address,
+          carbon_usage: route.carbon_usage,
+          route_distance: route.route_distance
+         });
       } catch (err) {
         next(err);
       }
@@ -89,7 +95,6 @@ exports.patchUser = async (req, res, next) => {
   const { username, name, profile_url } = req.body;
   try {
     const updatedUser = await changeUser(user_id, name, username, profile_url);
-    console.log(updatedUser)
     res.status(200).json({
         user_id: updatedUser.user_id,
         name: updatedUser.name,
@@ -104,13 +109,14 @@ exports.patchUser = async (req, res, next) => {
 };
 
 exports.patchUserRoute = async (req, res, next) => {
-  const { route_id } = req.params;
+  const {user_id, route_id} = req.params;
   const { route_address, carbon_usage, route_distance } = req.body;
 
   try {
-    const updatedUser = await changeUserRoute(route_id, route_address, carbon_usage, route_distance);
+    const updatedUser = await changeUserRoute(user_id,route_id, route_address, carbon_usage, route_distance);
     res.status(200).json({
       route_id: updatedUser.route_id,
+      user_id: updatedUser.user_id,
       route_address: updatedUser.route_address,
       carbon_usage: updatedUser.carbon_usage,
       route_distance: updatedUser.route_distance,
