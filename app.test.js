@@ -12,6 +12,8 @@ afterAll(() => {
   return db.end();
 });
 
+// ---------------------------------------------------------------------------------------
+
 describe("404: generic not found error", () => {
   test("404: returns 'not found' when api users endpoint is invalid due to typo or different endpoint received", async () => {
     const response = await request(app).get("/api/user");
@@ -19,6 +21,8 @@ describe("404: generic not found error", () => {
     expect(response.body.msg).toBe("Not Found");
   });
 });
+
+// ---------------------------------------------------------------------------------------
 
 describe("GET /api/users", () => {
   test("200: return an array of users", async () => {
@@ -37,6 +41,8 @@ describe("GET /api/users", () => {
     });
   });
 });
+
+// ---------------------------------------------------------------------------------------
 
 describe("GET /api/users/:user_id", () => {
   test("200, returns specific user information", async () => {
@@ -67,6 +73,8 @@ describe("GET /api/users/:user_id", () => {
   });
 });
 
+// ---------------------------------------------------------------------------------------
+
 describe("GET /api/users/:user_id/user_routes", () => {
   test("200: return an array of users saved routes", async () => {
     const response = await request(app).get("/api/users/1/user_routes");
@@ -96,6 +104,8 @@ describe("GET /api/users/:user_id/user_routes", () => {
     expect(response.body.msg).toBe("Bad Request");
   });
 });
+
+// ---------------------------------------------------------------------------------------
 
 describe("GET /api/users/:user_id/user_routes/:route_id", () => {
   test("200: return a specific user route", async () => {
@@ -140,6 +150,8 @@ describe("GET /api/users/:user_id/user_routes/:route_id", () => {
   });
 });
 
+// ---------------------------------------------------------------------------------------
+
 describe("POST /api/users", () => {
   test("201: successfully adds a user", async () => {
     const response = await request(app).post("/api/users").send({
@@ -174,6 +186,8 @@ describe("POST /api/users", () => {
     expect(response.body.msg).toBe("Bad request: invalid data format");
   });
 });
+
+// ---------------------------------------------------------------------------------------
 
 describe("POST /api/users/:user_id/user_routes", () => {
   test("201: successfully adds a user route", async () => {
@@ -212,14 +226,14 @@ describe("POST /api/users/:user_id/user_routes", () => {
       route_distance: 33, //needs to come from gmaps api call
     };
     const response = await request(app)
-    .post("/api/users/1/user_routes")
-    .send(invalidRoute)
-    .expect(400);
+      .post("/api/users/1/user_routes")
+      .send(invalidRoute)
+      .expect(400);
     expect(response.body.msg).toBe(
       "Bad request: invalid data format (eg route_address)"
     );
-  })
-  
+  });
+
   test("status: 404 when user_id is valid but does not exist", async () => {
     const route = {
       route_address: "https://www.google.com",
@@ -233,7 +247,6 @@ describe("POST /api/users/:user_id/user_routes", () => {
     expect(response.body.msg).toBe("User_id does not exist: 9999");
   });
 
-
   test("status: 400 if user_id is invalid (e.g., string)", async () => {
     const route = {
       route_address: "https://www.google.com",
@@ -246,74 +259,192 @@ describe("POST /api/users/:user_id/user_routes", () => {
       .expect(400);
     expect(response.body.msg).toBe("Bad Request");
   });
-
 });
 
-// describe("PATCH /api/users/:user_id", () => {
-//   test("200: successfully updates one single changeable item of user information", async () => {
-//     const response = await request(app).patch("/api/users/1").send({
-//       name: "Arthur",
-//     });
-//     expect(response.status).toBe(200);
-//     expect(response.body).toEqual({
-//       user_id: 1,
-//       username: "mrgreen",
-//       name: "Arthur",
-//       profile_url:
-//         "https://images.unsplash.com/photo-1623582854588-d60de57fa33f?q=80&w=3870&auto=format&f[…]3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-//       total_routes: 10,
-//       total_carbon: 26,
-//     });
-//   });
+// ---------------------------------------------------------------------------------------
 
-//   test("200: successfully updates multiple items of changeable user information", async () => {
-//     const response = await request(app).patch("/api/users/1").send({
-//       name: "Katie",
-//       username: "katie123",
-//       profile_url: "https://www.google.com",
-//     });
-//     expect(response.status).toBe(200);
-//     expect(response.body).toEqual({
-//       user_id: 1,
-//       name: "Katie",
-//       username: "katie123",
-//       profile_url: "https://www.google.com",
-//       total_routes: 10,
-//       total_carbon: 26,
-//     });
-//   });
-// });
+describe("PATCH /api/users/:user_id", () => {
+  test("200: successfully updates one single changeable item of user information", async () => {
+    const response = await request(app).patch("/api/users/1").send({
+      name: "Arthur",
+    });
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      user_id: 1,
+      username: "mrgreen",
+      name: "Arthur",
+      profile_url:
+        "https://images.unsplash.com/photo-1623582854588-d60de57fa33f?q=80&w=3870&auto=format&f[…]3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      total_routes: 10,
+      total_carbon: 26,
+    });
+  });
 
-// describe("PATCH /api/users/:user_id/users_routes/:route_id", () => {
-//   test("200: successfully updates user routes", async () => {
-//     const response = await request(app)
-//       .patch("/api/users/1/user_routes/1")
-//       .send({
-//         route_address: "https://google.com",
-//         carbon_usage: 24,
-//         route_distance: 17,
-//       });
-//     expect(response.status).toBe(200);
-//     expect(response.body).toEqual({
-//       route_id: 1,
-//       user_id: 1,
-//       route_address: "https://google.com",
-//       carbon_usage: 24,
-//       route_distance: 17,
-//     });
-//   });
-// });
+  test("200: successfully updates multiple items of changeable user information", async () => {
+    const response = await request(app).patch("/api/users/1").send({
+      name: "Katie",
+      username: "katie123",
+      profile_url: "https://www.google.com",
+    });
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      user_id: 1,
+      name: "Katie",
+      username: "katie123",
+      profile_url: "https://www.google.com",
+      total_routes: 10,
+      total_carbon: 26,
+    });
+  });
 
-// describe("DELETE /api/users/:user_id", () => {
-//   test("204: delete a user", async () => {
-//     const response = await request(app).delete("/api/users/2");
-//     expect(response.status).toBe(204);
-//   });
-// });
+  test("Status 400: responds with an appropriate error message when not changing anything", async () => {
+    const response = await request(app)
+      .patch("/api/users/1")
+      .send({})
+      .expect(400);
+    expect(response.body.msg).toBe(
+      "Bad request: you need to include changes to your user profile"
+    );
+  });
 
-// describe("DELETE /api/users/:user_id/user_routes/:route_id", () => {
-//   test("204: delete a user route", async () => {
-//     const response = await request(app).delete("/api/users/1/user_routes/2");
-//     expect(response.status).toBe(204);
-//   });
-// });
+  test("Status 400: responds with an appropriate error message when passed an invalid type in the body", async () => {
+    const updatedUser = {
+      name: 1234,
+      username: "katie123",
+      profile_url: "https://www.google.com",
+    };
+    const response = await request(app).patch("/api/users/1").send(updatedUser);
+    expect(response.status).toBe(400);
+    expect(response.body.msg).toBe("Bad request: invalid data format");
+  });
+
+  test("Status 404: responds with an appropriate error message when user_id is valid but doesn't exist", async () => {
+    const updatedUser = {
+      name: "Katie",
+      username: "katie123",
+      profile_url: "https://www.google.com",
+    };
+    const response = await request(app)
+      .patch("/api/users/9999")
+      .send(updatedUser);
+    expect(response.status).toBe(404);
+    expect(response.body.msg).toBe("User_id does not exist: 9999");
+  });
+
+  test("Status 400: responds with an appropriate error message when user_id is an invalid type", async () => {
+    const updatedUser = {
+      name: "Katie",
+      username: "katie123",
+      profile_url: "https://www.google.com",
+    };
+    const response = await request(app)
+      .patch("/api/users/chocolate")
+      .send(updatedUser);
+    expect(response.status).toBe(400);
+    expect(response.body.msg).toBe("Bad Request");
+  });
+});
+
+// ---------------------------------------------------------------------------------------
+
+describe("PATCH /api/users/:user_id/users_routes/:route_id", () => {
+  test("200: successfully updates user routes", async () => {
+    const response = await request(app)
+      .patch("/api/users/1/user_routes/1")
+      .send({
+        route_address: "https://google.com",
+        carbon_usage: 24,
+        route_distance: 17,
+      });
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      route_id: 1,
+      user_id: 1,
+      route_address: "https://google.com",
+      carbon_usage: 24,
+      route_distance: 17,
+    });
+  });
+
+  test("Status 400: responds with an appropriate error message when not changing anything", async () => {
+    const response = await request(app)
+      .patch("/api/users/1/user_routes/1")
+      .send({})
+      .expect(400);
+    expect(response.body.msg).toBe(
+      "Bad request: you need to include changes to your user profile"
+    );
+  });
+
+  test("Status 400: responds with an appropriate error message when passed an invalid type in the body", async () => {
+    const response = await request(app)
+      .patch("/api/users/1/user_routes/1")
+      .send({
+        route_address: true,
+        carbon_usage: 24,
+        route_distance: 17,
+      });
+    expect(response.status).toBe(400);
+    expect(response.body.msg).toBe("Bad request: invalid data format");
+  });
+
+  test("Status 404: responds with an appropriate error message when user_id is valid but doesn't exist", async () => {
+    const response = await request(app)
+      .patch("/api/users/9999/user_routes/1")
+      .send({
+        route_address: "https://google.com",
+        carbon_usage: 24,
+        route_distance: 17,
+      });
+    expect(response.status).toBe(404);
+    expect(response.body.msg).toBe("User_id does not exist: 9999");
+  });
+
+  test("Status 404: responds with an appropriate error message when route_id is valid but doesn't exist", async () => {
+    const response = await request(app)
+      .patch("/api/users/1/user_routes/9999")
+      .send({
+        route_address: "https://google.com",
+        carbon_usage: 24,
+        route_distance: 17,
+      });
+    expect(response.status).toBe(404);
+    expect(response.body.msg).toBe("Route_id does not exist: 9999");
+  });
+
+  test("Status 404: responds with an appropriate error message when route_id and user_id are valid but don't exist", async () => {
+    const response = await request(app)
+      .patch("/api/users/9999/user_routes/9999")
+      .send({
+        route_address: "https://google.com",
+        carbon_usage: 24,
+        route_distance: 17,
+      });
+    expect(response.status).toBe(404);
+    expect(response.body.msg).toBe("User_id does not exist: 9999"); // it will check user_id first so will return the error message related to user_id
+  });
+
+  test("Status 400: responds with an appropriate error message when user_id is an invalid type", async () => {
+    const response = await request(app)
+      .patch("/api/users/strawberry/user_routes/1")
+      .send({
+        route_address: "https://google.com",
+        carbon_usage: 24,
+        route_distance: 17,
+      });
+    expect(response.status).toBe(400);
+    expect(response.body.msg).toBe("Bad Request");
+  });
+
+  test("Status 400: responds with an appropriate error message when route_id is an invalid type", async () => {
+    const response = await request(app)
+      .patch("/api/users/1/user_routes/icecream")
+      .send({
+        route_address: "https://google.com",
+        carbon_usage: 24,
+        route_distance: 17,
+      });
+    expect(response.status).toBe(400);
+    expect(response.body.msg).toBe("Bad Request");
+  });
+});
