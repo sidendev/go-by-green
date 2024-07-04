@@ -12,7 +12,7 @@ exports.selectUserById = async (user_id) => {
   if (user.rows.length === 0) {
     return Promise.reject({
       status: 404,
-      msg: `User_id not found`,
+      msg: `User not found for user_id: ${user_id}`,
     });
   }
   return user.rows[0];
@@ -31,7 +31,7 @@ exports.selectUserRoutes = async (user_id) => {
     if (routes.rows.length === 0) {
       return Promise.reject({
         status: 404,
-        msg: `User_id not found`,
+        msg: `User not found for user_id: ${user_id}`,
       });
     }
     return routes.rows;
@@ -43,16 +43,25 @@ exports.selectUserRoutes = async (user_id) => {
 
 exports.selectRouteById = async (user_id, route_id) => {
   try {
-    const sqlQuery = `SELECT * from user_routes WHERE user_id = $1 AND route_id = $2;`;
-    const queryValues = [user_id, route_id];
-    const routeById = await db.query(sqlQuery, queryValues);
-    if (routeById.rows.length === 0) {
+    const userCheckQuery = 'SELECT * FROM users WHERE user_id = $1;';
+    const userCheckResult = await db.query(userCheckQuery, [user_id]);
+    if (userCheckResult.rowCount === 0) {
       return Promise.reject({
         status: 404,
-        msg: `User_id or route_id not found`,
+        msg: `User not found for user_id: ${user_id}`,
       });
     }
-    return routeById.rows[0];
+
+    const routeCheckQuery = 'SELECT * FROM user_routes WHERE user_id = $1 AND route_id = $2;';
+    const routeCheckResult = await db.query(routeCheckQuery, [user_id, route_id]);
+    if (routeCheckResult.rowCount === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: `Route not found for route_id: ${route_id}`,
+      });
+    }
+
+    return routeCheckResult.rows[0];
   } catch (error) {
     console.error("Error fetching user routes by id:", error);
     throw error;
@@ -207,20 +216,39 @@ exports.removeUser = async (user_id) => {
 };
 
 exports.removeUserRoute = async (user_id, route_id) => {
+  if (isNaN(route_id)) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad request: route_id must be a number"
+    });
+  }
+
   try {
-    const sqlQuery = `DELETE FROM user_routes WHERE user_id = $1 AND route_id = $2 RETURNING *;`;
-    const queryValues = [user_id, route_id];
-    const deletedUser = await db.query(sqlQuery, queryValues);
-    if (deletedUser.rowCount === 0) {
+    const userCheckQuery = 'SELECT * FROM users WHERE user_id = $1;';
+    const userCheckResult = await db.query(userCheckQuery, [user_id]);
+    if (userCheckResult.rowCount === 0) {
       return Promise.reject({
         status: 404,
         msg: `User not found for user_id: ${user_id}`,
       });
-    } else {
-      return deletedUser.rows[0];
     }
-  } catch (error) {
+
+    const routeCheckQuery = 'SELECT * FROM user_routes WHERE user_id = $1 AND route_id = $2;';
+    const routeCheckResult = await db.query(routeCheckQuery, [user_id, route_id]);
+    if (routeCheckResult.rowCount === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: `Route not found for route_id: ${route_id}`,
+      });
+    }
+
+    const deleteQuery = `DELETE FROM user_routes WHERE user_id = $1 AND route_id = $2 RETURNING *;`;
+    const deleteResult = await db.query(deleteQuery, [user_id, route_id]);
+    return deleteResult.rows[0];
+  } 
+  catch (error) {
     console.error("psql error for deleting route", error);
     throw error;
   }
 };
+
