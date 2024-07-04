@@ -57,6 +57,7 @@ exports.getRouteById = async (req, res, next) => {
   }
 };
 
+
 exports.createUser = async (req, res, next) => {
   const { name, username, profile_url } = req.body;
   try {

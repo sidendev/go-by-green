@@ -63,7 +63,7 @@ describe("GET /api/users/:user_id", () => {
   test("404, error when user_id does not exist but is valid", async () => {
     const response = await request(app).get("/api/users/9999");
     expect(response.status).toBe(404);
-    expect(response.body.msg).toBe("User_id not found");
+    expect(response.body.msg).toBe("User not found for user_id: 9999");
   });
 
   test("400, error when user_id is invalid", async () => {
@@ -93,7 +93,7 @@ describe("GET /api/users/:user_id/user_routes", () => {
   test("404, error when user_id does not exist but is valid", async () => {
     const response = await request(app).get("/api/users/1000/user_routes");
     expect(response.status).toBe(404);
-    expect(response.body.msg).toBe("User_id not found");
+    expect(response.body.msg).toBe("User not found for user_id: 1000");
   });
 
   test("400, error when user_id is invalid", async () => {
@@ -124,7 +124,7 @@ describe("GET /api/users/:user_id/user_routes/:route_id", () => {
   test("404, error when user_id does not exist but is valid", async () => {
     const response = await request(app).get("/api/users/1000/user_routes/1");
     expect(response.status).toBe(404);
-    expect(response.body.msg).toBe("User_id or route_id not found");
+    expect(response.body.msg).toBe("User not found for user_id: 1000");
   });
 
   test("400, error when user_id is invalid", async () => {
@@ -138,7 +138,7 @@ describe("GET /api/users/:user_id/user_routes/:route_id", () => {
   test("404, error when route_id does not exist but is valid", async () => {
     const response = await request(app).get("/api/users/1/user_routes/1000");
     expect(response.status).toBe(404);
-    expect(response.body.msg).toBe("User_id or route_id not found");
+    expect(response.body.msg).toBe("Route not found for route_id: 1000");
   });
 
   test("400, error when route_id is invalid", async () => {
@@ -345,8 +345,6 @@ describe("PATCH /api/users/:user_id", () => {
   });
 });
 
-// ---------------------------------------------------------------------------------------
-
 describe("PATCH /api/users/:user_id/users_routes/:route_id", () => {
   test("200: successfully updates user routes", async () => {
     const response = await request(app)
@@ -446,5 +444,52 @@ describe("PATCH /api/users/:user_id/users_routes/:route_id", () => {
       });
     expect(response.status).toBe(400);
     expect(response.body.msg).toBe("Bad Request");
+
+describe("DELETE /api/users/:user_id", () => {
+  test("204: delete a user", async () => {
+    const response = await request(app).delete("/api/users/2");
+    expect(response.status).toBe(204);
+  });
+  test("status: 404 when user_id does not exist", async () => {
+    const response = await request(app)
+      .delete("/api/users/9999")
+      .expect(404);
+    expect(response.body.msg).toBe("User not found for user_id: 9999");
+  });
+  test("status: 400 for invalid requests (eg not a number when searching by user_id)", async () => {
+    const response = await request(app).delete("/api/users/invalidId");
+    expect(response.status).toBe(400);
+    expect(response.body.msg).toBe("Bad Request");
+  });
+});
+
+describe("DELETE /api/users/:user_id/user_routes/:route_id", () => {
+  test("204: delete a user route", async () => {
+    const response = await request(app).delete("/api/users/1/user_routes/2");
+    expect(response.status).toBe(204);
+  });
+  test("status: 404 when user_id does not exist", async () => {
+    const response = await request(app)
+      .delete("/api/users/9999/user_routes/2")
+      .expect(404);
+    expect(response.body.msg).toBe("User not found for user_id: 9999");
+  });
+  test("status: 404 when route_id does not exist", async () => {
+    const response = await request(app)
+      .delete("/api/users/1/user_routes/9999")
+      .expect(404);
+    expect(response.body.msg).toBe("Route not found for route_id: 9999");
+  });
+
+  //couldn't make this custom eg "Bad request: user_id must be a number" - kept getting overridden by generic error handler in the app. but it works fine for route_id. Can come back to it later if time!
+  test("status: 400 for invalid requests (eg not a number when searching by user_id)", async () => {
+    const response = await request(app).delete("/api/users/invalidId");
+    expect(response.status).toBe(400);
+    expect(response.body.msg).toBe("Bad Request");
+  });
+  test("status: 400 for invalid requests (eg not a number when searching by route_id)", async () => {
+    const response = await request(app).delete("/api/users/1/user_routes/invalidId");
+    expect(response.status).toBe(400);
+    expect(response.body.msg).toBe("Bad request: route_id must be a number");
   });
 });

@@ -52,10 +52,10 @@ app.delete("/api/users/:user_id/user_routes/:route_id", deleteUserRoute);
 //404 if the user id or route id does not exist
 //400 if user_id or route id is invalid
 
-//errors in the endpoints
 app.all("*", (req, res) => {
   res.status(404).send({ msg: "Not Found" });
 });
+
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {
     res.status(err.status).send({ msg: err.msg });
@@ -63,6 +63,7 @@ app.use((err, req, res, next) => {
     next(err);
   }
 });
+
 app.use((err, req, res, next) => {
   if (err.code === "22P02") {
     res.status(400).send({ msg: "Bad Request" });
@@ -70,6 +71,7 @@ app.use((err, req, res, next) => {
     next(err);
   }
 });
+
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(500).send({ msg: "Internal Server Error" });
