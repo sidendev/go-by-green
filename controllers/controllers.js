@@ -58,9 +58,9 @@ exports.getRouteById = async (req, res, next) => {
 };
 
 exports.createUser = async (req, res, next) => {
-    const newUser = req.body
+    const {name, username, profile_url} = req.body
     try {
-        const newUserDetails = await makeUser(newUser);
+        const newUserDetails = await makeUser(name, username, profile_url);
         res.status(201).send({ 
             user_id: newUserDetails.user_id,
             username: newUserDetails.username,
@@ -76,9 +76,9 @@ exports.createUser = async (req, res, next) => {
 
 exports.createUserRoute = async (req, res, next) => {
   const {user_id} = req.params
-    const newRouteInfo = req.body
+    const {route_address, carbon_usage, route_distance} = req.body
     try {
-        const newRoute = await makeUserRoute(user_id, newRouteInfo);
+        const newRoute = await makeUserRoute(user_id, route_address, carbon_usage, route_distance);
         res.status(201).send({ 
           user_id: newRoute.user_id,
           route_address: newRoute.route_address,

@@ -59,9 +59,13 @@ exports.selectRouteById = async (user_id, route_id) => {
   }
 };
 
-exports.makeUser = async (newUser) => {
-  const { name, username, profile_url } = newUser;
-  console.log(newUser, "MODEL")
+exports.makeUser = async (name, username, profile_url ) => {
+  if (!name || !username || !profile_url) { 
+    return Promise.reject({ status: 400, msg: "Bad Request" }); }
+
+  if (typeof name !== "string" || typeof username !== "string" || typeof profile_url !== "string") { 
+    return Promise.reject({ status: 400, msg: "Bad request: invalid data format" }); }
+
   const sqlQuery = `
         INSERT INTO users (name, username, profile_url)
         VALUES ($1, $2, $3)
@@ -69,7 +73,6 @@ exports.makeUser = async (newUser) => {
     `;
   try {
     const user = await db.query(sqlQuery, [name, username, profile_url]);
-    console.log(user.rows[0])
     return user.rows[0];
   } catch (error) {
     console.error("Error making new user:", error);
@@ -77,13 +80,27 @@ exports.makeUser = async (newUser) => {
   }
 };
 
-exports.makeUserRoute = async (user_id, newRouteInfo) => {
+exports.makeUserRoute = async (user_id, route_address, carbon_usage, route_distance) => {
+  if (!route_address || !carbon_usage || !route_distance) {
+    return Promise.reject({ status: 400, msg: "Bad request: must include a route address, carbon usage and route distance"})
+  }
+  if (typeof route_address !== "string" || typeof carbon_usage !=="number" || typeof route_distance !=="number"){
+    return Promise.reject({status: 400, msg: "Bad request: invalid data format (eg route_address)"})
+  }
+
+  const checkUser = await db.query(
+    `SELECT * FROM users WHERE user_id = $1;`,
+    [user_id]
+)
+if (!checkUser.rows.length) {
+    return Promise.reject({ status: 404, msg: `User_id does not exist: ${user_id}` });
+}
+
   const sqlQuery = `
     INSERT INTO user_routes (user_id, route_address, carbon_usage, route_distance) VALUES ($1, $2, $3, $4)
     RETURNING *`;
 
   try {
-    const { route_address, carbon_usage, route_distance } = newRouteInfo;
     const user_route = await db.query(sqlQuery, [
       user_id,
       route_address,
@@ -96,6 +113,8 @@ exports.makeUserRoute = async (user_id, newRouteInfo) => {
     throw error;
   }
 };
+
+
 
 exports.changeUser = async (user_id, name, username, profile_url) => {
     if (typeof name === "number") {

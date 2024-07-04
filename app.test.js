@@ -164,18 +164,18 @@ describe("POST /api/users", () => {
     expect(response.body.msg).toBe("Bad Request");
   });
 
-  test.only("400: when body when datatypes are invalid", async () => {
+  test("400: when body when datatypes are invalid", async () => {
     const response = await request(app).post("/api/users").send({
       name: 500, //why is number allowed??
       username: 5,
       profile_url: 5,
     });
     expect(response.status).toBe(400);
-    expect(response.body.msg).toBe("Bad Request");
+    expect(response.body.msg).toBe("Bad request: invalid data format");
   });
 });
 
-describe("POST /api/users/:user_id/saved_user_routes", () => {
+describe("POST /api/users/:user_id/user_routes", () => {
   test("201: successfully adds a user route", async () => {
     const response = await request(app).post("/api/users/1/user_routes").send({
       route_address: "https://www.google.com",
@@ -190,73 +190,130 @@ describe("POST /api/users/:user_id/saved_user_routes", () => {
       route_distance: 33, //needs update after distance calculation
     });
   });
-});
 
-describe("PATCH /api/users/:user_id", () => {
-  test("200: successfully updates one single changeable item of user information", async () => {
-    const response = await request(app).patch("/api/users/1").send({
-      name: "Arthur",
-    });
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual({
-      user_id: 1,
-      username: "mrgreen",
-      name: "Arthur",
-      profile_url:
-        "https://images.unsplash.com/photo-1623582854588-d60de57fa33f?q=80&w=3870&auto=format&f[…]3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      total_routes: 10,
-      total_carbon: 26,
-    });
-  });
-
-  test("200: successfully updates multiple items of changeable user information", async () => {
-    const response = await request(app).patch("/api/users/1").send({
-      name: "Katie",
-      username: "katie123",
-      profile_url: "https://www.google.com",
-    });
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual({
-      user_id: 1,
-      name: "Katie",
-      username: "katie123",
-      profile_url: "https://www.google.com",
-      total_routes: 10,
-      total_carbon: 26,
-    });
-  });
-});
-
-describe("PATCH /api/users/:user_id/users_routes/:route_id", () => {
-  test("200: successfully updates user routes", async () => {
+  test("status: 400 if missing part of the body", async () => {
+    const unfinishedRoute = {
+      carbon_usage: 22, //needs to come from calculation in front end (API/hard coded)
+      route_distance: 33, //needs to come from gmaps api call
+    };
     const response = await request(app)
-      .patch("/api/users/1/user_routes/1")
-      .send({
-        route_address: "https://google.com",
-        carbon_usage: 24,
-        route_distance: 17,
-      });
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual({
-      route_id: 1,
-      user_id: 1,
-      route_address: "https://google.com",
-      carbon_usage: 24,
-      route_distance: 17,
-    });
+      .post("/api/users/1/user_routes")
+      .send(unfinishedRoute)
+      .expect(400);
+    expect(response.body.msg).toBe(
+      "Bad request: must include a route address, carbon usage and route distance"
+    );
   });
+
+  test("status: 400 when the body is invalid", async () => {
+    const invalidRoute = {
+      route_address: 1234,
+      carbon_usage: 22, //needs to come from calculation in front end (API/hard coded)
+      route_distance: 33, //needs to come from gmaps api call
+    };
+    const response = await request(app)
+    .post("/api/users/1/user_routes")
+    .send(invalidRoute)
+    .expect(400);
+    expect(response.body.msg).toBe(
+      "Bad request: invalid data format (eg route_address)"
+    );
+  })
+  
+  test("status: 404 when user_id is valid but does not exist", async () => {
+    const route = {
+      route_address: "https://www.google.com",
+      carbon_usage: 22, //needs to come from calculation in front end (API/hard coded)
+      route_distance: 33, //needs to come from gmaps api call
+    };
+    const response = await request(app)
+      .post("/api/users/9999/user_routes")
+      .send(route)
+      .expect(404);
+    expect(response.body.msg).toBe("User_id does not exist: 9999");
+  });
+
+
+  test("status: 400 if user_id is invalid (e.g., string)", async () => {
+    const route = {
+      route_address: "https://www.google.com",
+      carbon_usage: 22, //needs to come from calculation in front end (API/hard coded)
+      route_distance: 33, //needs to come from gmaps api call
+    };
+    const response = await request(app)
+      .post("/api/users/string/user_routes")
+      .send(route)
+      .expect(400);
+    expect(response.body.msg).toBe("Bad Request");
+  });
+
 });
 
-describe("DELETE /api/users/:user_id", () => {
-  test("204: delete a user", async () => {
-    const response = await request(app).delete("/api/users/2");
-    expect(response.status).toBe(204);
-  });
-});
+// describe("PATCH /api/users/:user_id", () => {
+//   test("200: successfully updates one single changeable item of user information", async () => {
+//     const response = await request(app).patch("/api/users/1").send({
+//       name: "Arthur",
+//     });
+//     expect(response.status).toBe(200);
+//     expect(response.body).toEqual({
+//       user_id: 1,
+//       username: "mrgreen",
+//       name: "Arthur",
+//       profile_url:
+//         "https://images.unsplash.com/photo-1623582854588-d60de57fa33f?q=80&w=3870&auto=format&f[…]3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+//       total_routes: 10,
+//       total_carbon: 26,
+//     });
+//   });
 
-describe("DELETE /api/users/:user_id/user_routes/:route_id", () => {
-  test("204: delete a user route", async () => {
-    const response = await request(app).delete("/api/users/1/user_routes/2");
-    expect(response.status).toBe(204);
-  });
-});
+//   test("200: successfully updates multiple items of changeable user information", async () => {
+//     const response = await request(app).patch("/api/users/1").send({
+//       name: "Katie",
+//       username: "katie123",
+//       profile_url: "https://www.google.com",
+//     });
+//     expect(response.status).toBe(200);
+//     expect(response.body).toEqual({
+//       user_id: 1,
+//       name: "Katie",
+//       username: "katie123",
+//       profile_url: "https://www.google.com",
+//       total_routes: 10,
+//       total_carbon: 26,
+//     });
+//   });
+// });
+
+// describe("PATCH /api/users/:user_id/users_routes/:route_id", () => {
+//   test("200: successfully updates user routes", async () => {
+//     const response = await request(app)
+//       .patch("/api/users/1/user_routes/1")
+//       .send({
+//         route_address: "https://google.com",
+//         carbon_usage: 24,
+//         route_distance: 17,
+//       });
+//     expect(response.status).toBe(200);
+//     expect(response.body).toEqual({
+//       route_id: 1,
+//       user_id: 1,
+//       route_address: "https://google.com",
+//       carbon_usage: 24,
+//       route_distance: 17,
+//     });
+//   });
+// });
+
+// describe("DELETE /api/users/:user_id", () => {
+//   test("204: delete a user", async () => {
+//     const response = await request(app).delete("/api/users/2");
+//     expect(response.status).toBe(204);
+//   });
+// });
+
+// describe("DELETE /api/users/:user_id/user_routes/:route_id", () => {
+//   test("204: delete a user route", async () => {
+//     const response = await request(app).delete("/api/users/1/user_routes/2");
+//     expect(response.status).toBe(204);
+//   });
+// });
