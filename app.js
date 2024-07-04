@@ -1,43 +1,54 @@
-const express = require('express')
+const express = require("express");
 
-const {getUsers, getUserById, getUserRoutes, getRouteById, createUser, createUserRoute, patchUser, patchUserRoute, deleteUser, deleteUserRoute} = require("./controllers/controllers")
+const {
+  getUsers,
+  getUserById,
+  getUserRoutes,
+  getRouteById,
+  createUser,
+  createUserRoute,
+  patchUser,
+  patchUserRoute,
+  deleteUser,
+  deleteUserRoute,
+} = require("./controllers/controllers");
 
 const app = express();
-app.use(express.json()); 
+app.use(express.json());
 
 //endpoints
-app.get('/api/users', getUsers);
-app.get('/api/users/:user_id', getUserById)
+app.get("/api/users", getUsers);
+app.get("/api/users/:user_id", getUserById);
 //404 error if the user id does not exist - DONE
 //400 if user_id is invalid - DONE
-app.get('/api/users/:user_id/user_routes', getUserRoutes)
+app.get("/api/users/:user_id/user_routes", getUserRoutes);
 //404 error if the user id does not exist - DONE
-//400 if user_id is invalid -DONE 
-app.get('/api/users/:user_id/user_routes/:route_id', getRouteById)
+//400 if user_id is invalid -DONE
+app.get("/api/users/:user_id/user_routes/:route_id", getRouteById);
 //404 if the user id or route id does not exist -DONE
 //400 if user_id or route id  is invalid -DONE
-app.post('/api/users', createUser)
+app.post("/api/users", createUser);
 //400 when body is malformed or missing -DONE
-//400 error when invalid body is given - ???
-app.post('/api/users/:user_id/user_routes', createUserRoute)
-//400 when body is malformed or missing
-//400 error when invalid body is given
+//400 error when invalid body is given -  DONE
+app.post("/api/users/:user_id/user_routes", createUserRoute);
+//400 when body is malformed or missing DONE
+//400 error when invalid body is given DONE
+//404 if the user id does not exist DONE
+//400 if user_id is invalid DONE
+app.patch("/api/users/:user_id", patchUser);
+//400 when body is malformed or missing DONE
+//400 error when invalid body is given DONE
+//404 if the user id does not exist DONE
+//400 if user_id is invalid DONE
+app.patch("/api/users/:user_id/user_routes/:route_id", patchUserRoute);
+//400 when body is malformed or missing DONE
+//400 error when invalid body is given DONE
+//404 if the user id or route id does not exist DONE
+//400 if user_id or route id is invalid DONE
+app.delete("/api/users/:user_id", deleteUser);
 //404 if the user id does not exist
 //400 if user_id is invalid
-app.patch('/api/users/:user_id', patchUser)
-//400 when body is malformed or missing
-//400 error when invalid body is given
-//404 if the user id does not exist
-//400 if user_id is invalid
-app.patch('/api/users/:user_id/user_routes/:route_id', patchUserRoute)
-//400 when body is malformed or missing
-//400 error when invalid body is given
-//404 if the user id or route id does not exist
-//400 if user_id or route id is invalid
-app.delete('/api/users/:user_id', deleteUser)
-//404 if the user id does not exist
-//400 if user_id is invalid
-app.delete('/api/users/:user_id/user_routes/:route_id', deleteUserRoute)
+app.delete("/api/users/:user_id/user_routes/:route_id", deleteUserRoute);
 //404 if the user id or route id does not exist
 //400 if user_id or route id is invalid
 
@@ -54,7 +65,7 @@ app.use((err, req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  if (err.code === '22P02') {
+  if (err.code === "22P02") {
     res.status(400).send({ msg: "Bad Request" });
   } else {
     next(err);
@@ -66,5 +77,4 @@ app.use((err, req, res, next) => {
   res.status(500).send({ msg: "Internal Server Error" });
 });
 
-
-module.exports = app
+module.exports = app;
