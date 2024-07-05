@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions, Button } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import axios from 'axios';
 import { GOOGLE_MAPS_API_KEY } from '@env';
 
-const address = '10 Downing St, London SW1A 2AA';
+console.log(GOOGLE_MAPS_API_KEY)
+
+const address = '24%20Sussex%20Drive%20Ottawa%20ON';
 
 const MapComponent: React.FC = () => {
   const [location, setLocation] = useState<{
@@ -25,6 +27,7 @@ const MapComponent: React.FC = () => {
           }
         );
         const location = response.data.results[0].geometry.location;
+        console.log(fetchCoordinates, location)
         setLocation({
           latitude: location.lat,
           longitude: location.lng,
@@ -37,13 +40,19 @@ const MapComponent: React.FC = () => {
     fetchCoordinates();
   }, []);
 
+  const onPressLearnMore = () => {
+    return console.log("Hello")
+  }
+
   return (
     <View style={styles.container}>
+
+        <View style={styles.map}>
       <MapView
-        style={styles.map}
+      style={{flex: 1}}
         initialRegion={{
-          latitude: 37.7749,
-          longitude: -122.4194,
+          latitude: 53.480759,
+          longitude: -2.242631,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
@@ -56,18 +65,36 @@ const MapComponent: React.FC = () => {
           />
         )}
       </MapView>
+      </View>
+      
+      <View style={styles.buttonView}>
+        <Button
+        style= {{height:"50%"}}
+  onPress={onPressLearnMore}
+  title="Learn More"
+  color="#841584"
+  accessibilityLabel="Learn more about this purple button"
+/>
     </View>
+
+    </View>
+
+
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    height: "100%",
+    width: "100%"
   },
   map: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
+    height: "50%",
   },
+  buttonView: {
+    height: "50%",
+    width: "80%"
+  }
 });
 
 export default MapComponent;
