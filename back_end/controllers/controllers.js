@@ -51,6 +51,7 @@ exports.getRouteById = async (req, res, next) => {
       route_address: route.route_address,
       carbon_usage: route.carbon_usage,
       route_distance: route.route_distance,
+      mode_of_transport: route.mode_of_transport,
     });
   } catch (err) {
     next(err);
@@ -59,9 +60,9 @@ exports.getRouteById = async (req, res, next) => {
 
 
 exports.createUser = async (req, res, next) => {
-  const { name, username, profile_url } = req.body;
+  const { name, username, profile_url, password } = req.body;
   try {
-    const newUserDetails = await makeUser(name, username, profile_url);
+    const newUserDetails = await makeUser(name, username, profile_url, password);
     res.status(201).send({
       user_id: newUserDetails.user_id,
       username: newUserDetails.username,
@@ -69,6 +70,7 @@ exports.createUser = async (req, res, next) => {
       profile_url: newUserDetails.profile_url,
       total_routes: newUserDetails.total_routes,
       total_carbon: newUserDetails.total_carbon,
+      password: newUserDetails.password,
     });
   } catch (err) {
     next(err);
@@ -77,19 +79,21 @@ exports.createUser = async (req, res, next) => {
 
 exports.createUserRoute = async (req, res, next) => {
   const { user_id } = req.params;
-  const { route_address, carbon_usage, route_distance } = req.body;
+  const { route_address, carbon_usage, route_distance, mode_of_transport } = req.body;
   try {
     const newRoute = await makeUserRoute(
       user_id,
       route_address,
       carbon_usage,
-      route_distance
+      route_distance,
+      mode_of_transport,
     );
     res.status(201).send({
       user_id: newRoute.user_id,
       route_address: newRoute.route_address,
       carbon_usage: newRoute.carbon_usage,
       route_distance: newRoute.route_distance,
+      mode_of_transport: newRoute.mode_of_transport,
     });
   } catch (err) {
     next(err);
@@ -98,9 +102,9 @@ exports.createUserRoute = async (req, res, next) => {
 
 exports.patchUser = async (req, res, next) => {
   const { user_id } = req.params;
-  const { username, name, profile_url } = req.body;
+  const { username, name, profile_url, password } = req.body;
   try {
-    const updatedUser = await changeUser(user_id, name, username, profile_url);
+    const updatedUser = await changeUser(user_id, name, username, profile_url, password);
     res.status(200).json({
       user_id: updatedUser.user_id,
       name: updatedUser.name,
@@ -108,6 +112,7 @@ exports.patchUser = async (req, res, next) => {
       profile_url: updatedUser.profile_url,
       total_routes: updatedUser.total_routes,
       total_carbon: updatedUser.total_carbon,
+      password: updatedUser.password,
     });
   } catch (err) {
     next(err);
@@ -116,24 +121,22 @@ exports.patchUser = async (req, res, next) => {
 
 exports.patchUserRoute = async (req, res, next) => {
   const { user_id, route_id } = req.params;
-  const { route_address, carbon_usage, route_distance } = req.body;
+  const { route_address, carbon_usage, route_distance, mode_of_transport } = req.body;
+
+  console.log("Controller received:", { user_id, route_id, route_address, carbon_usage, route_distance, mode_of_transport });
 
   try {
-    const updatedUser = await changeUserRoute(
+    const updatedRoute = await changeUserRoute(
       user_id,
       route_id,
       route_address,
       carbon_usage,
-      route_distance
+      route_distance,
+      mode_of_transport,
     );
-    res.status(200).json({
-      route_id: updatedUser.route_id,
-      user_id: updatedUser.user_id,
-      route_address: updatedUser.route_address,
-      carbon_usage: updatedUser.carbon_usage,
-      route_distance: updatedUser.route_distance,
-    });
+    res.status(200).json(updatedRoute);
   } catch (err) {
+    console.error("Controller error:", err);
     next(err);
   }
 };
