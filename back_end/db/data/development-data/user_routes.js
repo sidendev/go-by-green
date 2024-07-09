@@ -1,72 +1,132 @@
 module.exports = [
   {
     user_id: 1,
-    route_address: 'https://www.google.co.uk/maps/dir/London+Gatwick+Airport+(LGW),+Horley,+Gatwick/London/@51.3419266,-0.4393995,10z/data=!3m1!4b1!4m14!4m13!1m5!1m1!1s0x4875efde7d1f391b:0x59dda4bf018973ff!2m2!1d-0.1820629!2d51.1536621!1m5!1m1!1s0x47d8a00baf21de75:0x52963a5addd52a99!2m2!1d-0.1275862!2d51.5072178!3e3?entry=ttu',
-    carbon_usage: 0,
-    route_distance: 17,
-    mode_of_transport: 'cycling'
+    origin_address: 'Canary Wharf, Underground Ltd, Heron Quays Rd, London E14 4HJ, UK',
+    destination_address: 'Tooting Bec, Underground Ltd, Balham High Rd, London SW17 7AA, UK',
+    origin_lat: null,
+    origin_long: null,
+    destination_lat: null,
+    destination_long: null,
+    carbon_usage: 20,
+    route_distance: "16,74 km",
+    mode_of_transport: 'public_transport',
+    route_time: "41 min"
   },
   {
     user_id: 1,
-    route_address: 'https://www.google.co.uk/maps/dir/Puttshack+Bank,+Poultry,+London/Transport+Museum,+London/@51.5126778,-0.1178401,15z/data=!3m1!4b1!4m14!4m13!1m5!1m1!1s0x487603f12a23c921:0xa0ac756c0a6e8bcf!2m2!1d-0.0913926!2d51.5130522!1m5!1m1!1s0x487605afd476b1e1:0x31039524163a770d!2m2!1d-0.1215852!2d51.5119031!3e3?entry=ttu',
+    origin_address: '40 Ollersett Avenue, New Mills, High Peak, SK22 4LE, UK',
+    destination_address: '50 Market Street, New Mills, High Peak, SK22 4AA, UK',
+    origin_lat: null,
+    origin_long: null,
+    destination_lat: null,
+    destination_long: null,
     carbon_usage: 0,
-    route_distance: 34,
-    mode_of_transport: 'walking'
+    route_distance: "0,8 km",
+    mode_of_transport: 'walking',
+    route_time: "13 mins"
   },
   {
     user_id: 1,
-    route_address: 'https://www.google.co.uk/maps/dir/Tesco+Express,+114-116+Violet+Rd,+Bow,+London+E3+3QG/London+Eye,+London/@51.5109163,-0.0981227,13z/data=!3m2!4b1!5s0x487604c79a2ef535:0x6b1752373d1ab417!4m14!4m13!1m5!1m1!1s0x48761d4c7330dc9b:0x9938d223ac8f4a59!2m2!1d-0.0168979!2d51.5189163!1m5!1m1!1s0x487604b900d26973:0x4291f3172409ea92!2m2!1d-0.1195192!2d51.5031864!3e3?entry=ttu',
-    carbon_usage: 51,
-    route_distance: 63,
-    mode_of_transport: 'public_transport'
+    origin_address: '10 Downing Street, London SW1A 2AB',
+    destination_address: 'Élysée Palace, 55 Rue du Faubourg Saint-Honoré, 75008 Paris, France',
+    origin_lat: null,
+    origin_long: null,
+    destination_lat: null,
+    destination_long: null,
+    carbon_usage: 0,
+    route_distance: "416,34 km",
+    mode_of_transport: 'cycling',
+    route_time: "3 hours 36 mins"
   },
   {
     user_id: 2,
-    route_address: 'https://www.google.co.uk/maps/dir/Tesco+Express,+114-116+Violet+Rd,+Bow,+London+E3+3QG/Forbidden+Planet+London+Megastore,+Shaftesbury+Avenue,+London/@51.5248722,-0.1083526,13z/data=!3m2!4b1!5s0x487604c79a2ef535:0x6b1752373d1ab417!4m14!4m13!1m5!1m1!1s0x48761d4c7330dc9b:0x9938d223ac8f4a59!2m2!1d-0.0168979!2d51.5189163!1m5!1m1!1s0x48761b32cc1770b3:0x38c43399a7314d58!2m2!1d-0.127327!2d51.5151226!3e3?entry=ttu',
+    origin_address: '20 W 34th St., New York, NY 10001, United States',
+    destination_address: '1220 5th Ave, New York, NY 10029, United States',
+    origin_lat: null,
+    origin_long: null,
+    destination_lat: null,
+    destination_long: null,
     carbon_usage: 0,
-    route_distance: 8,
-    mode_of_transport: 'walking'
+    route_distance: "5,8 km",
+    mode_of_transport: 'walking',
+    route_time: "1 hour 20 mins"
   },
   {
     user_id: 3,
-    route_address: 'https://www.google.co.uk/maps/dir/Heathrow+Airport,+Longford,+Hounslow/London+Zoo,+Regent%27s+Park,+London/@51.5106071,-0.2932296,11z/data=!3m1!4b1!4m14!4m13!1m5!1m1!1s0x487669330d4a0d25:0x79a9c3b48b774024!2m2!1d-0.4542955!2d51.4700223!1m5!1m1!1s0x487610a38d6e1f01:0xb5ebe225c0b85a2f!2m2!1d-0.1552551!2d51.535185!3e3?entry=ttu',
+    origin_address: '112 Devonshire St, Sheffield City Centre, Sheffield S3 7SF',
+    destination_address: '186 London Rd, Highfield, Sheffield S2 4LT',
+    origin_lat: null,
+    origin_long: null,
+    destination_lat: null,
+    destination_long: null,
     carbon_usage: 0,
-    route_distance: 22,
-    mode_of_transport: 'cycling'
+    route_distance: "1,8 km",
+    mode_of_transport: 'cycling',
+    route_time: "6 mins"
   },
   {
     user_id: 3,
-    route_address: 'https://www.google.co.uk/maps/dir/Buckingham+Palace,+London/Science+Museum,+Exhibition+Rd,+South+Kensington,+London/@51.5009376,-0.1435201,13z/data=!3m1!4b1!4m14!4m13!1m5!1m1!1s0x4876051f2b6c7c79:0x5393c3e8f53b3a6d!2m2!1d-0.1402223!2d51.5013673!1m5!1m1!1s0x4876052b0d4b9383:0x15f2e0b1c06f8020!2m2!1d-0.1749723!2d51.4978096!3e3?entry=ttu',
-    carbon_usage: 28,
-    route_distance: 10,
-    mode_of_transport: 'public_transport'
+    origin_address: '1 Railway Station Cottages, Edale, Hope Valley S33 7ZP',
+    destination_address: 'Mill Ln, Castleton, Hope Valley S33 8WR',
+    origin_lat: null,
+    origin_long: null,
+    destination_lat: null,
+    destination_long: null,
+    carbon_usage: 10,
+    route_distance: "10 km",
+    mode_of_transport: 'public_transport',
+    route_time: "21 mins"
   },
   {
     user_id: 4,
-    route_address: 'https://www.google.co.uk/maps/dir/Tower+of+London,+London/Emirates+Stadium,+Hornsey+Rd,+London/@51.5047166,-0.1203062,13z/data=!3m1!4b1!4m14!4m13!1m5!1m1!1s0x48761ccf1026e2d5:0xa364b07be6ef5c5f!2m2!1d-0.0762022!2d51.5078788!1m5!1m1!1s0x48761b804a2b11cd:0x7d82063b3c47a6a6!2m2!1d-0.1111473!2d51.5550018!3e3?entry=ttu',
+    origin_address: '3 Stepney Bank, Newcastle upon Tyne NE1 2NP',
+    destination_address: 'Hope Works, Unit 1A, Hope Works, 1A Sussex Rd, Sheffield S4 7YQ',
+    origin_lat: null,
+    origin_long: null,
+    destination_lat: null,
+    destination_long: null,
     carbon_usage: 0,
-    route_distance: 16,
-    mode_of_transport: 'walking'
+    route_distance: "206 km",
+    mode_of_transport: 'walking',
+    route_time: "2 hours 33 mins"
   },
   {
     user_id: 4,
-    route_address: 'https://www.google.co.uk/maps/dir/Covent+Garden,+London/Tate+Modern,+Bankside,+London/@51.5111163,-0.1226602,15z/data=!3m1!4b1!4m14!4m13!1m5!1m1!1s0x4876058b3342d281:0x52963a5addd52a99!2m2!1d-0.1227428!2d51.5135647!1m5!1m1!1s0x487604e3e7de99cd:0x3b48cd06c9db6e93!2m2!1d-0.1015496!2d51.5078396!3e3?entry=ttu',
-    carbon_usage: 0,
-    route_distance: 12,
-    mode_of_transport: 'cycling'
+    origin_address: '558 Broadway, New York, NY 10012, United States',
+    destination_address: '450 10th St, San Francisco, CA 94103, United States',
+    origin_lat: null,
+    origin_long: null,
+    destination_lat: null,
+    destination_long: null,
+    carbon_usage: 500,
+    route_distance: "4667 km",
+    mode_of_transport: 'public_transport',
+    route_time: "3 days 9 hours"
   },
   {
     user_id: 1,
-    route_address: 'https://www.google.co.uk/maps/dir/Big+Ben,+London/London+Aquarium,+Westminster+Bridge+Rd,+Lambeth,+London/@51.5007292,-0.1246258,15z/data=!3m1!4b1!4m14!4m13!1m5!1m1!1s0x4876050cfd475b8f:0xd7e4e7e804ae3738!2m2!1d-0.1246258!2d51.5007292!1m5!1m1!1s0x487605a0861dd2e7:0x659a26c4a3e68ae4!2m2!1d-0.1193362!2d51.5010108!3e3?entry=ttu',
-    carbon_usage: 37,
-    route_distance: 9,
-    mode_of_transport: 'public_transport'
+    origin_address: 'Stazione, P.za Sigmund Freud, 1, 20124 Milano MI, Italy',
+    destination_address: 'Frankenallee 111, 60326 Frankfurt am Main, Germany',
+    origin_lat: null,
+    origin_long: null,
+    destination_lat: null,
+    destination_long: null,
+    carbon_usage: 100,
+    route_distance: "662 km",
+    mode_of_transport: 'public_transport',
+    route_time: "10 hours 57 mins"
   },
   {
     user_id: 2,
-    route_address: 'https://www.google.co.uk/maps/dir/Harrods,+Knightsbridge,+London/Science+Museum,+Exhibition+Rd,+South+Kensington,+London/@51.5008443,-0.1636569,15z/data=!3m1!4b1!4m14!4m13!1m5!1m1!1s0x487605d8d72b6b5d:0xb5ebe225c0b85a2f!2m2!1d-0.1657315!2d51.4995644!1m5!1m1!1s0x4876052b0d4b9383:0x15f2e0b1c06f8020!2m2!1d-0.1749723!2d51.4978096!3e3?entry=ttu',
+    origin_address: 'Overblaak 70, 3011 MH Rotterdam, Netherlands',
+    destination_address: 'Pomorosso Pizzeria, Amstelveenseweg 41, 1075 VT Amsterdam, Netherlands',
+    origin_lat: null,
+    origin_long: null,
+    destination_lat: null,
+    destination_long: null,
     carbon_usage: 0,
-    route_distance: 5,
-    mode_of_transport: 'walking'
+    route_distance: "69,6 km",
+    mode_of_transport: 'cycling',
+    route_time: "3 hours 32 mins"
   }
 ];

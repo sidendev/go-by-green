@@ -20,7 +20,7 @@ exports.selectUserById = async (user_id) => {
 
 exports.selectUserRoutes = async (user_id) => {
   const sqlQuery = `
-        SELECT users.username, user_routes.route_address, user_routes.carbon_usage, user_routes.route_distance, mode_of_transport 
+        SELECT users.username, user_routes.origin_address, user_routes.destination_address, user_routes.carbon_usage, user_routes.route_distance, user_routes.mode_of_transport, user_routes.route_time 
         FROM users
         JOIN user_routes ON users.user_id = user_routes.user_id 
         WHERE users.user_id = $1;
