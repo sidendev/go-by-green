@@ -55,8 +55,9 @@ describe("GET /api/users/:user_id", () => {
       name: "Oliver Meadows",
       profile_url:
         "https://images.unsplash.com/photo-1623582854588-d60de57fa33f?q=80&w=3870&auto=format&f[…]3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      total_routes: 10,
+      total_routes: 4,
       total_carbon: 26,
+      password: "123456"
     });
   });
 
@@ -116,8 +117,9 @@ describe("GET /api/users/:user_id/user_routes/:route_id", () => {
       user_id: 1,
       route_address:
         "https://www.google.co.uk/maps/dir/London+Gatwick+Airport+(LGW),+Horley,+Gatwick/London/@51.3419266,-0.4393995,10z/data=!3m1!4b1!4m14!4m13!1m5!1m1!1s0x4875efde7d1f391b:0x59dda4bf018973ff!2m2!1d-0.1820629!2d51.1536621!1m5!1m1!1s0x47d8a00baf21de75:0x52963a5addd52a99!2m2!1d-0.1275862!2d51.5072178!3e3?entry=ttu",
-      carbon_usage: 24,
+      carbon_usage: 0,
       route_distance: 17,
+      mode_of_transport: 'cycling',
     });
   });
 
@@ -158,6 +160,7 @@ describe("POST /api/users", () => {
       name: "Butter_Bridge",
       username: "hello_butter_bridge",
       profile_url: "https://google.com",
+      password: "hello123"
     });
     expect(response.status).toBe(201);
     expect(response.body).toEqual({
@@ -167,6 +170,7 @@ describe("POST /api/users", () => {
       profile_url: "https://google.com",
       total_routes: 0,
       total_carbon: 0,
+      password: "hello123"
     });
   });
 
@@ -178,9 +182,10 @@ describe("POST /api/users", () => {
 
   test("400: when body when datatypes are invalid", async () => {
     const response = await request(app).post("/api/users").send({
-      name: 500, //why is number allowed??
+      name: 500,
       username: 5,
       profile_url: 5,
+      password: 5,
     });
     expect(response.status).toBe(400);
     expect(response.body.msg).toBe("Bad request: invalid data format");
@@ -195,6 +200,7 @@ describe("POST /api/users/:user_id/user_routes", () => {
       route_address: "https://www.google.com",
       carbon_usage: 22, //needs to come from calculation in front end (API/hard coded)
       route_distance: 33, //needs to come from gmaps api call
+      mode_of_transport: "public_transport",
     });
     expect(response.status).toBe(201);
     expect(response.body).toEqual({
@@ -202,6 +208,7 @@ describe("POST /api/users/:user_id/user_routes", () => {
       route_address: "https://www.google.com",
       carbon_usage: 22, //needs update after carbon calculation
       route_distance: 33, //needs update after distance calculation
+      mode_of_transport: "public_transport"
     });
   });
 
@@ -215,7 +222,7 @@ describe("POST /api/users/:user_id/user_routes", () => {
       .send(unfinishedRoute)
       .expect(400);
     expect(response.body.msg).toBe(
-      "Bad request: must include a route address, carbon usage and route distance"
+      "Bad request: must include a route address, carbon usage, route distance and mode of transport"
     );
   });
 
@@ -224,6 +231,7 @@ describe("POST /api/users/:user_id/user_routes", () => {
       route_address: 1234,
       carbon_usage: 22, //needs to come from calculation in front end (API/hard coded)
       route_distance: 33, //needs to come from gmaps api call
+      mode_of_transport: "public_transport",
     };
     const response = await request(app)
       .post("/api/users/1/user_routes")
@@ -239,6 +247,7 @@ describe("POST /api/users/:user_id/user_routes", () => {
       route_address: "https://www.google.com",
       carbon_usage: 22, //needs to come from calculation in front end (API/hard coded)
       route_distance: 33, //needs to come from gmaps api call
+      mode_of_transport: "public_transport",
     };
     const response = await request(app)
       .post("/api/users/9999/user_routes")
@@ -252,6 +261,7 @@ describe("POST /api/users/:user_id/user_routes", () => {
       route_address: "https://www.google.com",
       carbon_usage: 22, //needs to come from calculation in front end (API/hard coded)
       route_distance: 33, //needs to come from gmaps api call
+      mode_of_transport: "public_transport"
     };
     const response = await request(app)
       .post("/api/users/string/user_routes")
@@ -275,8 +285,9 @@ describe("PATCH /api/users/:user_id", () => {
       name: "Arthur",
       profile_url:
         "https://images.unsplash.com/photo-1623582854588-d60de57fa33f?q=80&w=3870&auto=format&f[…]3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      total_routes: 10,
+      total_routes: 4,
       total_carbon: 26,
+      password: "123456",
     });
   });
 
@@ -292,8 +303,9 @@ describe("PATCH /api/users/:user_id", () => {
       name: "Katie",
       username: "katie123",
       profile_url: "https://www.google.com",
-      total_routes: 10,
+      total_routes: 4,
       total_carbon: 26,
+      password: "123456",
     });
   });
 
@@ -346,13 +358,30 @@ describe("PATCH /api/users/:user_id", () => {
 });
 
 describe("PATCH /api/users/:user_id/users_routes/:route_id", () => {
-  test("200: successfully updates user routes", async () => {
+  test("200: successfully updates one single changeable item of user route information", async () => {
+    const response = await request(app)
+      .patch("/api/users/1/user_routes/1")
+      .send({
+        route_address: "https://google.com",
+      });
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      route_id: 1,
+      user_id: 1,
+      route_address: "https://google.com",
+      carbon_usage: 0,
+      route_distance: 17,
+      mode_of_transport: "cycling"
+    });
+  });
+  test("200: successfully updates multiple pieces of information for a user's route", async () => {
     const response = await request(app)
       .patch("/api/users/1/user_routes/1")
       .send({
         route_address: "https://google.com",
         carbon_usage: 24,
         route_distance: 17,
+        mode_of_transport: "public_transport"
       });
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
@@ -361,6 +390,7 @@ describe("PATCH /api/users/:user_id/users_routes/:route_id", () => {
       route_address: "https://google.com",
       carbon_usage: 24,
       route_distance: 17,
+      mode_of_transport: "public_transport"
     });
   });
 

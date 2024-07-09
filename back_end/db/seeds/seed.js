@@ -15,7 +15,8 @@ const seed = ({ usersData, userRoutesData }) => {
           name TEXT NOT NULL,
           profile_url TEXT,
           total_routes INT DEFAULT 0 NOT NULL,
-          total_carbon INT DEFAULT 0 NOT NULL
+          total_carbon INT DEFAULT 0 NOT NULL,
+          password VARCHAR NOT NULL
         );`);
 
       return usersTablePromise.then(() => {
@@ -25,31 +26,34 @@ const seed = ({ usersData, userRoutesData }) => {
             user_id INT,
             route_address VARCHAR NOT NULL,
             carbon_usage INT DEFAULT 0 NOT NULL,
-            route_distance INT DEFAULT 0 NOT NULL
+            route_distance INT DEFAULT 0 NOT NULL,
+            mode_of_transport VARCHAR NOT NULL
           );`);
       });
     })
     .then(() => {
       const insertUsersQueryStr = format(
-        "INSERT INTO users (username, name, profile_url, total_routes, total_carbon) VALUES %L;",
-        usersData.map(({ username, name, profile_url, total_routes, total_carbon }) => [
+        "INSERT INTO users (username, name, profile_url, total_routes, total_carbon, password) VALUES %L;",
+        usersData.map(({ username, name, profile_url, total_routes, total_carbon, password }) => [
           username,
           name,
           profile_url,
           total_routes,
           total_carbon,
+          password,
         ])
       );
       const usersPromise = db.query(insertUsersQueryStr);
 
       const insertUserRoutesQueryStr = format(
-        "INSERT INTO user_routes (user_id, route_address, carbon_usage, route_distance) VALUES %L;",
+        "INSERT INTO user_routes (user_id, route_address, carbon_usage, route_distance, mode_of_transport) VALUES %L;",
         userRoutesData.map(
-          ({user_id, route_address, carbon_usage, route_distance }) => [
+          ({user_id, route_address, carbon_usage, route_distance, mode_of_transport }) => [
             user_id,
             route_address,
             carbon_usage,
             route_distance,
+            mode_of_transport,
           ]
         )
       );
