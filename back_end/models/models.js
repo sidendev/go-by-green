@@ -101,22 +101,26 @@ exports.makeUser = async (name, username, profile_url, password) => {
 
 exports.makeUserRoute = async (
   user_id,
-  route_address,
+  origin_address,
+  destination_address,
   carbon_usage,
   route_distance,
-  mode_of_transport
+  mode_of_transport,
+  route_time
 ) => {
-  if (!route_address || !carbon_usage || !route_distance || !mode_of_transport) {
+  if (!origin_address || !destination_address || !carbon_usage || !route_distance || !mode_of_transport || !route_time) {
     return Promise.reject({
       status: 400,
-      msg: "Bad request: must include a route address, carbon usage, route distance and mode of transport",
+      msg: "Bad request: must include an origin address, a destination address, carbon usage, route distance, mode of transport and a route time",
     });
   }
   if (
-    typeof route_address !== "string" ||
+    typeof origin_address !== "string" ||
+    typeof destination_address !== "string" ||
     typeof carbon_usage !== "number" ||
-    typeof route_distance !== "number" ||
-    typeof mode_of_transport!== "string"
+    typeof route_distance !== "string" ||
+    typeof mode_of_transport!== "string" ||
+    typeof route_time !== "string"
   ) {
     return Promise.reject({
       status: 400,
@@ -135,16 +139,18 @@ exports.makeUserRoute = async (
   }
 
   const sqlQuery = `
-    INSERT INTO user_routes (user_id, route_address, carbon_usage, route_distance, mode_of_transport) VALUES ($1, $2, $3, $4, $5)
+    INSERT INTO user_routes (user_id, origin_address, destination_address, carbon_usage, route_distance, mode_of_transport, route_time) VALUES ($1, $2, $3, $4, $5, $6, $7)
     RETURNING *`;
 
   try {
     const user_route = await db.query(sqlQuery, [
       user_id,
-      route_address,
+      origin_address,
+      destination_address,
       carbon_usage,
       route_distance,
       mode_of_transport,
+      route_time
     ]);
     return user_route.rows[0];
   } catch (error) {
@@ -211,17 +217,18 @@ exports.changeUser = async (user_id, name, username, profile_url, password) => {
 exports.changeUserRoute = async (
   user_id,
   route_id,
-  route_address,
+  origin_address,
+  destination_address,
   carbon_usage,
   route_distance,
   mode_of_transport,
+  route_time
 ) => {
-  console.log("Received parameters:", { user_id, route_id, route_address, carbon_usage, route_distance, mode_of_transport });
 
-  if (!route_address && !carbon_usage && !route_distance && !mode_of_transport) {
+  if (!origin_address && !destination_address && !carbon_usage && !route_distance && !mode_of_transport && !route_time) {
     return Promise.reject({
       status: 400,
-      msg: "Bad request: you need to include changes to your user profile",
+      msg: "Bad request: you need to include changes to your route",
     });
   }
 
@@ -242,10 +249,12 @@ exports.changeUserRoute = async (
   }
 
   if (
-    (route_address && typeof route_address !== "string") ||
+    (origin_address && typeof origin_address !== "string") ||
+    (destination_address && typeof destination_address !== "string") ||
     (carbon_usage && typeof carbon_usage !== "number") ||
-    (route_distance && typeof route_distance !== "number") ||
-    (mode_of_transport && typeof mode_of_transport !== "string")
+    (route_distance && typeof route_distance !== "string") ||
+    (mode_of_transport && typeof mode_of_transport !== "string") ||
+    (route_time && typeof route_time !== "string")
   ) {
     return Promise.reject({
       status: 400,
@@ -257,18 +266,18 @@ exports.changeUserRoute = async (
     const sqlQuery = `
       UPDATE user_routes
       SET
-        route_address = COALESCE($3, route_address),
-        carbon_usage = COALESCE($4, carbon_usage),
-        route_distance = COALESCE($5, route_distance),
-        mode_of_transport = COALESCE($6, mode_of_transport)
+        origin_address = COALESCE($3, origin_address),
+        destination_address = COALESCE($4, destination_address),
+        carbon_usage = COALESCE($5, carbon_usage),
+        route_distance = COALESCE($6, route_distance),
+        mode_of_transport = COALESCE($7, mode_of_transport),
+        route_time = COALESCE($8, mode_of_transport)
       WHERE route_id = $1 AND user_id = $2
       RETURNING *;
     `;
-    const queryValues = [user_id, route_id, route_address, carbon_usage, route_distance, mode_of_transport];
+    const queryValues = [user_id, route_id, origin_address, destination_address, carbon_usage, route_distance, mode_of_transport, route_time];
 
-    console.log("Executing query:", sqlQuery, "with values:", queryValues);
     const updatedRoute = await db.query(sqlQuery, queryValues);
-    console.log("Query result:", updatedRoute.rows);
 
     return updatedRoute.rows[0];
   } catch (error) {
