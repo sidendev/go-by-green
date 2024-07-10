@@ -48,10 +48,12 @@ exports.getRouteById = async (req, res, next) => {
     res.status(200).send({
       route_id: route.route_id,
       user_id: route.user_id,
-      route_address: route.route_address,
+      origin_address: route.origin_address,
+      destination_address: route.destination_address,
       carbon_usage: route.carbon_usage,
       route_distance: route.route_distance,
       mode_of_transport: route.mode_of_transport,
+      route_time: route.route_time
     });
   } catch (err) {
     next(err);
@@ -79,21 +81,25 @@ exports.createUser = async (req, res, next) => {
 
 exports.createUserRoute = async (req, res, next) => {
   const { user_id } = req.params;
-  const { route_address, carbon_usage, route_distance, mode_of_transport } = req.body;
+  const { origin_address, destination_address, carbon_usage, route_distance, mode_of_transport, route_time } = req.body;
   try {
     const newRoute = await makeUserRoute(
       user_id,
-      route_address,
+      origin_address,
+      destination_address, 
       carbon_usage,
       route_distance,
       mode_of_transport,
+      route_time
     );
     res.status(201).send({
       user_id: newRoute.user_id,
-      route_address: newRoute.route_address,
+      origin_address: newRoute.origin_address,
+      destination_address: newRoute.destination_address,
       carbon_usage: newRoute.carbon_usage,
       route_distance: newRoute.route_distance,
       mode_of_transport: newRoute.mode_of_transport,
+      route_time: newRoute.route_time
     });
   } catch (err) {
     next(err);
@@ -121,20 +127,29 @@ exports.patchUser = async (req, res, next) => {
 
 exports.patchUserRoute = async (req, res, next) => {
   const { user_id, route_id } = req.params;
-  const { route_address, carbon_usage, route_distance, mode_of_transport } = req.body;
-
-  console.log("Controller received:", { user_id, route_id, route_address, carbon_usage, route_distance, mode_of_transport });
+  const { origin_address, destination_address, carbon_usage, route_distance, mode_of_transport, route_time } = req.body;
 
   try {
     const updatedRoute = await changeUserRoute(
       user_id,
       route_id,
-      route_address,
+      origin_address,
+      destination_address, 
       carbon_usage,
       route_distance,
       mode_of_transport,
+      route_time
     );
-    res.status(200).json(updatedRoute);
+    res.status(200).send({
+      user_id: updatedRoute.user_id,
+      route_id: updatedRoute.route_id,
+      origin_address: updatedRoute.origin_address,
+      destination_address: updatedRoute.destination_address,
+      carbon_usage: updatedRoute.carbon_usage,
+      route_distance: updatedRoute.route_distance,
+      mode_of_transport: updatedRoute.mode_of_transport,
+      route_time: updatedRoute.route_time
+    });;
   } catch (err) {
     console.error("Controller error:", err);
     next(err);

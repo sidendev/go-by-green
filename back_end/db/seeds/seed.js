@@ -16,7 +16,7 @@ const seed = ({ usersData, userRoutesData }) => {
           profile_url VARCHAR,
           total_routes INT DEFAULT 0 NOT NULL,
           total_carbon FLOAT DEFAULT 0 NOT NULL,
-          password VARCHAR(6) NOT NULL
+          password VARCHAR(20) CHECK (LENGTH(password) >= 6) NOT NULL
         );`);
 
       return usersTablePromise.then(() => {

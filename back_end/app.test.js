@@ -111,7 +111,7 @@ describe("GET /api/users/:user_id/user_routes", () => {
 
 // ---------------------------------------------------------------------------------------
 
-describe.only("GET /api/users/:user_id/user_routes/:route_id", () => {
+describe("GET /api/users/:user_id/user_routes/:route_id", () => {
   test("200: return a specific user route", async () => {
     const response = await request(app).get("/api/users/1/user_routes/1");
     expect(response.status).toBe(200);
@@ -125,7 +125,7 @@ describe.only("GET /api/users/:user_id/user_routes/:route_id", () => {
       mode_of_transport: 'public_transport',
       route_time: "41 min"
     });
-  }); /////////////////////////////////////
+  });
 
   test("404, error when user_id does not exist but is valid", async () => {
     const response = await request(app).get("/api/users/1000/user_routes/1");
@@ -201,41 +201,47 @@ describe("POST /api/users", () => {
 describe("POST /api/users/:user_id/user_routes", () => {
   test("201: successfully adds a user route", async () => {
     const response = await request(app).post("/api/users/1/user_routes").send({
-      route_address: "https://www.google.com",
+      origin_address: "Battersea Power Station, Circus Rd W, Nine Elms, London SW11 8DD, UK",
+      destination_address: "Tower Bridge, Tower Bridge Rd, London SE1 2UP, UK",
       carbon_usage: 22, //needs to come from calculation in front end (API/hard coded)
-      route_distance: 33, //needs to come from gmaps api call
+      route_distance: "6,8 km", //needs to come from gmaps api call
       mode_of_transport: "public_transport",
+      route_time: "45 mins"
     });
     expect(response.status).toBe(201);
     expect(response.body).toEqual({
       user_id: 1,
-      route_address: "https://www.google.com",
+      origin_address: "Battersea Power Station, Circus Rd W, Nine Elms, London SW11 8DD, UK",
+      destination_address: "Tower Bridge, Tower Bridge Rd, London SE1 2UP, UK",
       carbon_usage: 22, //needs update after carbon calculation
-      route_distance: 33, //needs update after distance calculation
-      mode_of_transport: "public_transport"
+      route_distance: "6,8 km", //needs update after distance calculation
+      mode_of_transport: "public_transport",
+      route_time: "45 mins"
     });
   });
 
   test("status: 400 if missing part of the body", async () => {
     const unfinishedRoute = {
       carbon_usage: 22, //needs to come from calculation in front end (API/hard coded)
-      route_distance: 33, //needs to come from gmaps api call
+      route_distance: "6,8 km", //needs to come from gmaps api call
     };
     const response = await request(app)
       .post("/api/users/1/user_routes")
       .send(unfinishedRoute)
       .expect(400);
     expect(response.body.msg).toBe(
-      "Bad request: must include a route address, carbon usage, route distance and mode of transport"
+      "Bad request: must include an origin address, a destination address, carbon usage, route distance, mode of transport and a route time"
     );
   });
 
   test("status: 400 when the body is invalid", async () => {
     const invalidRoute = {
-      route_address: 1234,
+      origin_address: 1234,
+      destination_address: 12,
       carbon_usage: 22, //needs to come from calculation in front end (API/hard coded)
       route_distance: 33, //needs to come from gmaps api call
       mode_of_transport: "public_transport",
+      route_time: "45 mins"
     };
     const response = await request(app)
       .post("/api/users/1/user_routes")
@@ -248,10 +254,12 @@ describe("POST /api/users/:user_id/user_routes", () => {
 
   test("status: 404 when user_id is valid but does not exist", async () => {
     const route = {
-      route_address: "https://www.google.com",
+      origin_address: "Battersea Power Station, Circus Rd W, Nine Elms, London SW11 8DD, UK",
+      destination_address: "Tower Bridge, Tower Bridge Rd, London SE1 2UP, UK",
       carbon_usage: 22, //needs to come from calculation in front end (API/hard coded)
-      route_distance: 33, //needs to come from gmaps api call
+      route_distance: "6,8 km", //needs to come from gmaps api call
       mode_of_transport: "public_transport",
+      route_time: "45 mins"
     };
     const response = await request(app)
       .post("/api/users/9999/user_routes")
@@ -262,10 +270,12 @@ describe("POST /api/users/:user_id/user_routes", () => {
 
   test("status: 400 if user_id is invalid (e.g., string)", async () => {
     const route = {
-      route_address: "https://www.google.com",
+      origin_address: "Battersea Power Station, Circus Rd W, Nine Elms, London SW11 8DD, UK",
+      destination_address: "Tower Bridge, Tower Bridge Rd, London SE1 2UP, UK",
       carbon_usage: 22, //needs to come from calculation in front end (API/hard coded)
-      route_distance: 33, //needs to come from gmaps api call
-      mode_of_transport: "public_transport"
+      route_distance: "6,8 km", //needs to come from gmaps api call
+      mode_of_transport: "public_transport",
+      route_time: "45 mins"
     };
     const response = await request(app)
       .post("/api/users/string/user_routes")
@@ -362,49 +372,35 @@ describe("PATCH /api/users/:user_id", () => {
 });
 
 describe("PATCH /api/users/:user_id/users_routes/:route_id", () => {
-  test("200: successfully updates one single changeable item of user route information", async () => {
+  test("200: successfully updates user's route (must replace origin or destination address, as well as carbon usage, route distance and route time", async () => {
     const response = await request(app)
       .patch("/api/users/1/user_routes/1")
       .send({
-        route_address: "https://google.com",
+        origin_address: "Wembley Arena, Arena Square, Park, Wembley Park, Wembley HA9 0AA, UK",
+        carbon_usage: 10.1,
+        route_distance: "20,9 km",
+        route_time: "1 hour"
       });
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
-      route_id: 1,
       user_id: 1,
-      route_address: "https://google.com",
-      carbon_usage: 0,
-      route_distance: 17,
-      mode_of_transport: "cycling"
+      route_id: 1,
+      origin_address: "Wembley Arena, Arena Square, Park, Wembley Park, Wembley HA9 0AA, UK",
+      destination_address: "Tooting Bec, Underground Ltd, Balham High Rd, London SW17 7AA, UK",
+      carbon_usage: 10.1,
+      route_distance: "20,9 km",
+      mode_of_transport: "public_transport",
+      route_time: "1 hour"
     });
   });
-  test("200: successfully updates multiple pieces of information for a user's route", async () => {
-    const response = await request(app)
-      .patch("/api/users/1/user_routes/1")
-      .send({
-        route_address: "https://google.com",
-        carbon_usage: 24,
-        route_distance: 17,
-        mode_of_transport: "public_transport"
-      });
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual({
-      route_id: 1,
-      user_id: 1,
-      route_address: "https://google.com",
-      carbon_usage: 24,
-      route_distance: 17,
-      mode_of_transport: "public_transport"
-    });
-  });
-
+  
   test("Status 400: responds with an appropriate error message when not changing anything", async () => {
     const response = await request(app)
       .patch("/api/users/1/user_routes/1")
       .send({})
       .expect(400);
     expect(response.body.msg).toBe(
-      "Bad request: you need to include changes to your user profile"
+      "Bad request: you need to include changes to your route"
     );
   });
 
