@@ -4,6 +4,8 @@
 
 Go by Green is an Android travel app dedicated to providing directions exclusively through low carbon transport options. Users can view the carbon emissions for each travel option, promoting awareness of their environmental impact. Our goal is to encourage eco-friendly travel choices, guiding users to make decisions that benefit the environment. Users can also create an account to save their routes and access detailed information about their travel options.
 
+Demo: https://vimeo.com/984794832
+
 ## Project structure
 
 The project is divided into two main folders:
