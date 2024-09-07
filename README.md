@@ -6,6 +6,8 @@ GoByGreen is a Android mobile app concept designed to promote eco-friendly trave
 
 This project is a work in progress, initially developed as part of a group project during the Northcoders bootcamp. Future plans include trying out building versions in iOS and nextJS for web platforms.
 
+Original group project can be found at [https://github.com/HelloKt-8/GoByGreen](https://github.com/HelloKt-8/GoByGreen).
+
 ## Project Structure
 
 GoByGreen is structured as a monorepo, containing both the backend API and the frontend mobile application. This architecture was chosen to facilitate future expansion to iOS and web versions.
