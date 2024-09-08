@@ -1,5 +1,5 @@
-const format = require("pg-format");
-const db = require("../connection");
+const format = require('pg-format');
+const db = require('../connection');
 
 const seed = ({ usersData, userRoutesData }) => {
   return db
@@ -15,8 +15,7 @@ const seed = ({ usersData, userRoutesData }) => {
           name VARCHAR(50) NOT NULL,
           profile_url VARCHAR,
           total_routes INT DEFAULT 0 NOT NULL,
-          total_carbon FLOAT DEFAULT 0 NOT NULL,
-          password VARCHAR(20) CHECK (LENGTH(password) >= 6) NOT NULL
+          total_carbon FLOAT DEFAULT 0 NOT NULL
         );`);
 
       return usersTablePromise.then(() => {
@@ -39,29 +38,21 @@ const seed = ({ usersData, userRoutesData }) => {
     })
     .then(() => {
       const insertUsersQueryStr = format(
-        "INSERT INTO users (username, name, profile_url, total_routes, total_carbon, password) VALUES %L;",
+        'INSERT INTO users (username, name, profile_url, total_routes, total_carbon) VALUES %L;',
         usersData.map(
-          ({
+          ({ username, name, profile_url, total_routes, total_carbon }) => [
             username,
             name,
             profile_url,
             total_routes,
             total_carbon,
-            password,
-          }) => [
-            username,
-            name,
-            profile_url,
-            total_routes,
-            total_carbon,
-            password,
           ]
         )
       );
       const usersPromise = db.query(insertUsersQueryStr);
 
       const insertUserRoutesQueryStr = format(
-        "INSERT INTO user_routes (user_id, origin_address, destination_address, origin_lat, origin_long, destination_lat, destination_long, carbon_usage, route_distance, mode_of_transport, route_time) VALUES %L;",
+        'INSERT INTO user_routes (user_id, origin_address, destination_address, origin_lat, origin_long, destination_lat, destination_long, carbon_usage, route_distance, mode_of_transport, route_time) VALUES %L;',
         userRoutesData.map(
           ({
             user_id,
