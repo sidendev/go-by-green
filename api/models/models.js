@@ -36,7 +36,6 @@ exports.selectUserRoutes = async (user_id) => {
     }
     return routes.rows;
   } catch (error) {
-    console.error('Error fetching user routes:', error);
     throw error;
   }
 };
@@ -67,7 +66,6 @@ exports.selectRouteById = async (user_id, route_id) => {
 
     return routeCheckResult.rows[0];
   } catch (error) {
-    console.error('Error fetching user routes by id:', error);
     throw error;
   }
 };
@@ -209,11 +207,9 @@ exports.changeUser = async (user_id, name, username, profile_url) => {
       WHERE user_id = $1
       RETURNING *;
     `;
-    const queryValues = [user_id, name, username, profile_url];
 
-    console.log('Executing query:', sqlQuery, 'with values:', queryValues);
+    const queryValues = [user_id, name, username, profile_url];
     const result = await db.query(sqlQuery, queryValues);
-    console.log('Query result:', result.rows);
 
     return result.rows[0];
   } catch (error) {
