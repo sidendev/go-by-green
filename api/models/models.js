@@ -1,7 +1,7 @@
-const db = require("../db/connection");
+const db = require('../db/connection');
 
 exports.selectUsers = async () => {
-  const sqlQuery = "SELECT * FROM users;";
+  const sqlQuery = 'SELECT * FROM users;';
   const users = await db.query(sqlQuery);
   return users.rows;
 };
@@ -36,7 +36,7 @@ exports.selectUserRoutes = async (user_id) => {
     }
     return routes.rows;
   } catch (error) {
-    console.error("Error fetching user routes:", error);
+    console.error('Error fetching user routes:', error);
     throw error;
   }
 };
@@ -52,8 +52,12 @@ exports.selectRouteById = async (user_id, route_id) => {
       });
     }
 
-    const routeCheckQuery = 'SELECT * FROM user_routes WHERE user_id = $1 AND route_id = $2;';
-    const routeCheckResult = await db.query(routeCheckQuery, [user_id, route_id]);
+    const routeCheckQuery =
+      'SELECT * FROM user_routes WHERE user_id = $1 AND route_id = $2;';
+    const routeCheckResult = await db.query(routeCheckQuery, [
+      user_id,
+      route_id,
+    ]);
     if (routeCheckResult.rowCount === 0) {
       return Promise.reject({
         status: 404,
@@ -63,38 +67,37 @@ exports.selectRouteById = async (user_id, route_id) => {
 
     return routeCheckResult.rows[0];
   } catch (error) {
-    console.error("Error fetching user routes by id:", error);
+    console.error('Error fetching user routes by id:', error);
     throw error;
   }
 };
 
-exports.makeUser = async (name, username, profile_url, password) => {
-  if (!name || !username || !profile_url || !password) {
-    return Promise.reject({ status: 400, msg: "Bad Request" });
+exports.makeUser = async (name, username, profile_url) => {
+  if (!name || !username || !profile_url) {
+    return Promise.reject({ status: 400, msg: 'Bad Request' });
   }
 
   if (
-    typeof name !== "string" ||
-    typeof username !== "string" ||
-    typeof profile_url !== "string" ||
-    typeof password !== "string"
+    typeof name !== 'string' ||
+    typeof username !== 'string' ||
+    typeof profile_url !== 'string'
   ) {
     return Promise.reject({
       status: 400,
-      msg: "Bad request: invalid data format",
+      msg: 'Bad request: invalid data format',
     });
   }
 
   const sqlQuery = `
-        INSERT INTO users (name, username, profile_url, password)
-        VALUES ($1, $2, $3, $4)
+        INSERT INTO users (name, username, profile_url)
+        VALUES ($1, $2, $3)
         RETURNING *;
     `;
   try {
-    const user = await db.query(sqlQuery, [name, username, profile_url, password]);
+    const user = await db.query(sqlQuery, [name, username, profile_url]);
     return user.rows[0];
   } catch (error) {
-    console.error("Error making new user:", error);
+    console.error('Error making new user:', error);
     throw error;
   }
 };
@@ -108,23 +111,30 @@ exports.makeUserRoute = async (
   mode_of_transport,
   route_time
 ) => {
-  if (!origin_address || !destination_address || !carbon_usage || !route_distance || !mode_of_transport || !route_time) {
-    return Promise.reject({
-      status: 400,
-      msg: "Bad request: must include an origin address, a destination address, carbon usage, route distance, mode of transport and a route time",
-    });
-  }
   if (
-    typeof origin_address !== "string" ||
-    typeof destination_address !== "string" ||
-    typeof carbon_usage !== "number" ||
-    typeof route_distance !== "string" ||
-    typeof mode_of_transport!== "string" ||
-    typeof route_time !== "string"
+    !origin_address ||
+    !destination_address ||
+    !carbon_usage ||
+    !route_distance ||
+    !mode_of_transport ||
+    !route_time
   ) {
     return Promise.reject({
       status: 400,
-      msg: "Bad request: invalid data format (eg route_address)",
+      msg: 'Bad request: must include an origin address, a destination address, carbon usage, route distance, mode of transport and a route time',
+    });
+  }
+  if (
+    typeof origin_address !== 'string' ||
+    typeof destination_address !== 'string' ||
+    typeof carbon_usage !== 'number' ||
+    typeof route_distance !== 'string' ||
+    typeof mode_of_transport !== 'string' ||
+    typeof route_time !== 'string'
+  ) {
+    return Promise.reject({
+      status: 400,
+      msg: 'Bad request: invalid data format (eg route_address)',
     });
   }
 
@@ -150,20 +160,20 @@ exports.makeUserRoute = async (
       carbon_usage,
       route_distance,
       mode_of_transport,
-      route_time
+      route_time,
     ]);
     return user_route.rows[0];
   } catch (error) {
-    console.error("Error adding new route:", error);
+    console.error('Error adding new route:', error);
     throw error;
   }
 };
 
-exports.changeUser = async (user_id, name, username, profile_url, password) => {
-  if (!name && !username && !profile_url && !password) {
+exports.changeUser = async (user_id, name, username, profile_url) => {
+  if (!name && !username && !profile_url) {
     return Promise.reject({
       status: 400,
-      msg: "Bad request: you need to include changes to your user profile",
+      msg: 'Bad request: you need to include changes to your user profile',
     });
   }
 
@@ -179,14 +189,13 @@ exports.changeUser = async (user_id, name, username, profile_url, password) => {
   }
 
   if (
-    (name && typeof name !== "string") ||
-    (username && typeof username !== "string") ||
-    (profile_url && typeof profile_url !== "string") ||
-    (password && typeof password !== "string")
+    (name && typeof name !== 'string') ||
+    (username && typeof username !== 'string') ||
+    (profile_url && typeof profile_url !== 'string')
   ) {
     return Promise.reject({
       status: 400,
-      msg: "Bad request: invalid data format",
+      msg: 'Bad request: invalid data format',
     });
   }
 
@@ -196,20 +205,19 @@ exports.changeUser = async (user_id, name, username, profile_url, password) => {
       SET
         name = COALESCE($2, name),
         username = COALESCE($3, username),
-        profile_url = COALESCE($4, profile_url),
-        password = COALESCE($5, password)
+        profile_url = COALESCE($4, profile_url)
       WHERE user_id = $1
       RETURNING *;
     `;
-    const queryValues = [user_id, name, username, profile_url, password];
+    const queryValues = [user_id, name, username, profile_url];
 
-    console.log("Executing query:", sqlQuery, "with values:", queryValues);
+    console.log('Executing query:', sqlQuery, 'with values:', queryValues);
     const result = await db.query(sqlQuery, queryValues);
-    console.log("Query result:", result.rows);
+    console.log('Query result:', result.rows);
 
     return result.rows[0];
   } catch (error) {
-    console.error("Error changing user information", error);
+    console.error('Error changing user information', error);
     throw error;
   }
 };
@@ -224,15 +232,23 @@ exports.changeUserRoute = async (
   mode_of_transport,
   route_time
 ) => {
-
-  if (!origin_address && !destination_address && !carbon_usage && !route_distance && !mode_of_transport && !route_time) {
+  if (
+    !origin_address &&
+    !destination_address &&
+    !carbon_usage &&
+    !route_distance &&
+    !mode_of_transport &&
+    !route_time
+  ) {
     return Promise.reject({
       status: 400,
-      msg: "Bad request: you need to include changes to your route",
+      msg: 'Bad request: you need to include changes to your route',
     });
   }
 
-  const checkUser = await db.query(`SELECT * FROM users WHERE user_id = $1;`, [user_id]);
+  const checkUser = await db.query(`SELECT * FROM users WHERE user_id = $1;`, [
+    user_id,
+  ]);
   if (!checkUser.rows.length) {
     return Promise.reject({
       status: 404,
@@ -240,7 +256,10 @@ exports.changeUserRoute = async (
     });
   }
 
-  const checkRoute = await db.query(`SELECT * FROM user_routes WHERE route_id = $1;`, [route_id]);
+  const checkRoute = await db.query(
+    `SELECT * FROM user_routes WHERE route_id = $1;`,
+    [route_id]
+  );
   if (!checkRoute.rows.length) {
     return Promise.reject({
       status: 404,
@@ -249,16 +268,16 @@ exports.changeUserRoute = async (
   }
 
   if (
-    (origin_address && typeof origin_address !== "string") ||
-    (destination_address && typeof destination_address !== "string") ||
-    (carbon_usage && typeof carbon_usage !== "number") ||
-    (route_distance && typeof route_distance !== "string") ||
-    (mode_of_transport && typeof mode_of_transport !== "string") ||
-    (route_time && typeof route_time !== "string")
+    (origin_address && typeof origin_address !== 'string') ||
+    (destination_address && typeof destination_address !== 'string') ||
+    (carbon_usage && typeof carbon_usage !== 'number') ||
+    (route_distance && typeof route_distance !== 'string') ||
+    (mode_of_transport && typeof mode_of_transport !== 'string') ||
+    (route_time && typeof route_time !== 'string')
   ) {
     return Promise.reject({
       status: 400,
-      msg: "Bad request: invalid data format",
+      msg: 'Bad request: invalid data format',
     });
   }
 
@@ -275,13 +294,22 @@ exports.changeUserRoute = async (
       WHERE route_id = $1 AND user_id = $2
       RETURNING *;
     `;
-    const queryValues = [user_id, route_id, origin_address, destination_address, carbon_usage, route_distance, mode_of_transport, route_time];
+    const queryValues = [
+      user_id,
+      route_id,
+      origin_address,
+      destination_address,
+      carbon_usage,
+      route_distance,
+      mode_of_transport,
+      route_time,
+    ];
 
     const updatedRoute = await db.query(sqlQuery, queryValues);
 
     return updatedRoute.rows[0];
   } catch (error) {
-    console.error("Error changing route", error);
+    console.error('Error changing route', error);
     throw error;
   }
 };
@@ -304,7 +332,7 @@ exports.removeUserRoute = async (user_id, route_id) => {
   if (isNaN(route_id)) {
     return Promise.reject({
       status: 400,
-      msg: "Bad request: route_id must be a number"
+      msg: 'Bad request: route_id must be a number',
     });
   }
 
@@ -318,8 +346,12 @@ exports.removeUserRoute = async (user_id, route_id) => {
       });
     }
 
-    const routeCheckQuery = 'SELECT * FROM user_routes WHERE user_id = $1 AND route_id = $2;';
-    const routeCheckResult = await db.query(routeCheckQuery, [user_id, route_id]);
+    const routeCheckQuery =
+      'SELECT * FROM user_routes WHERE user_id = $1 AND route_id = $2;';
+    const routeCheckResult = await db.query(routeCheckQuery, [
+      user_id,
+      route_id,
+    ]);
     if (routeCheckResult.rowCount === 0) {
       return Promise.reject({
         status: 404,
@@ -330,10 +362,8 @@ exports.removeUserRoute = async (user_id, route_id) => {
     const deleteQuery = `DELETE FROM user_routes WHERE user_id = $1 AND route_id = $2 RETURNING *;`;
     const deleteResult = await db.query(deleteQuery, [user_id, route_id]);
     return deleteResult.rows[0];
-  } 
-  catch (error) {
-    console.error("psql error for deleting route", error);
+  } catch (error) {
+    console.error('psql error for deleting route', error);
     throw error;
   }
 };
-

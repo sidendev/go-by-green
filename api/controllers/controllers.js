@@ -9,7 +9,7 @@ const {
   changeUserRoute,
   removeUser,
   removeUserRoute,
-} = require("../models/models");
+} = require('../models/models');
 
 exports.getUsers = async (req, res, next) => {
   try {
@@ -53,18 +53,17 @@ exports.getRouteById = async (req, res, next) => {
       carbon_usage: route.carbon_usage,
       route_distance: route.route_distance,
       mode_of_transport: route.mode_of_transport,
-      route_time: route.route_time
+      route_time: route.route_time,
     });
   } catch (err) {
     next(err);
   }
 };
 
-
 exports.createUser = async (req, res, next) => {
-  const { name, username, profile_url, password } = req.body;
+  const { name, username, profile_url } = req.body;
   try {
-    const newUserDetails = await makeUser(name, username, profile_url, password);
+    const newUserDetails = await makeUser(name, username, profile_url);
     res.status(201).send({
       user_id: newUserDetails.user_id,
       username: newUserDetails.username,
@@ -72,7 +71,6 @@ exports.createUser = async (req, res, next) => {
       profile_url: newUserDetails.profile_url,
       total_routes: newUserDetails.total_routes,
       total_carbon: newUserDetails.total_carbon,
-      password: newUserDetails.password,
     });
   } catch (err) {
     next(err);
@@ -81,12 +79,19 @@ exports.createUser = async (req, res, next) => {
 
 exports.createUserRoute = async (req, res, next) => {
   const { user_id } = req.params;
-  const { origin_address, destination_address, carbon_usage, route_distance, mode_of_transport, route_time } = req.body;
+  const {
+    origin_address,
+    destination_address,
+    carbon_usage,
+    route_distance,
+    mode_of_transport,
+    route_time,
+  } = req.body;
   try {
     const newRoute = await makeUserRoute(
       user_id,
       origin_address,
-      destination_address, 
+      destination_address,
       carbon_usage,
       route_distance,
       mode_of_transport,
@@ -99,7 +104,7 @@ exports.createUserRoute = async (req, res, next) => {
       carbon_usage: newRoute.carbon_usage,
       route_distance: newRoute.route_distance,
       mode_of_transport: newRoute.mode_of_transport,
-      route_time: newRoute.route_time
+      route_time: newRoute.route_time,
     });
   } catch (err) {
     next(err);
@@ -108,9 +113,9 @@ exports.createUserRoute = async (req, res, next) => {
 
 exports.patchUser = async (req, res, next) => {
   const { user_id } = req.params;
-  const { username, name, profile_url, password } = req.body;
+  const { username, name, profile_url } = req.body;
   try {
-    const updatedUser = await changeUser(user_id, name, username, profile_url, password);
+    const updatedUser = await changeUser(user_id, name, username, profile_url);
     res.status(200).json({
       user_id: updatedUser.user_id,
       name: updatedUser.name,
@@ -118,7 +123,6 @@ exports.patchUser = async (req, res, next) => {
       profile_url: updatedUser.profile_url,
       total_routes: updatedUser.total_routes,
       total_carbon: updatedUser.total_carbon,
-      password: updatedUser.password,
     });
   } catch (err) {
     next(err);
@@ -127,14 +131,21 @@ exports.patchUser = async (req, res, next) => {
 
 exports.patchUserRoute = async (req, res, next) => {
   const { user_id, route_id } = req.params;
-  const { origin_address, destination_address, carbon_usage, route_distance, mode_of_transport, route_time } = req.body;
+  const {
+    origin_address,
+    destination_address,
+    carbon_usage,
+    route_distance,
+    mode_of_transport,
+    route_time,
+  } = req.body;
 
   try {
     const updatedRoute = await changeUserRoute(
       user_id,
       route_id,
       origin_address,
-      destination_address, 
+      destination_address,
       carbon_usage,
       route_distance,
       mode_of_transport,
@@ -148,10 +159,10 @@ exports.patchUserRoute = async (req, res, next) => {
       carbon_usage: updatedRoute.carbon_usage,
       route_distance: updatedRoute.route_distance,
       mode_of_transport: updatedRoute.mode_of_transport,
-      route_time: updatedRoute.route_time
-    });;
+      route_time: updatedRoute.route_time,
+    });
   } catch (err) {
-    console.error("Controller error:", err);
+    console.error('Controller error:', err);
     next(err);
   }
 };
