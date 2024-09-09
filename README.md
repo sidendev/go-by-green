@@ -70,7 +70,7 @@ GoByGreen is structured as a monorepo, containing both the backend API and the f
 - `GET /api/users/:user_id/routes`
 - `GET /api/users/:user_id/routes/:route_id`
 
-Note: The API is hosted on Render and may take upto 60 seconds to respond on first access.
+Note: The API is hosted on Render and may take upto 60 seconds to respond on first access, current set up is just for testing.
 
 ## Deployment
 
@@ -82,7 +82,7 @@ Note: The API is hosted on Render and may take upto 60 seconds to respond on fir
 - Expand to iOS platform
 - Develop a web version with NextJS
 - Enhance features and user experience
-- Add Gamification features to improve user engagement
+- Add gamification features to improve user engagement
 
 ## Acknowledgements
 
