@@ -32,10 +32,11 @@ export default function LoginScreen() {
           Get Going
         </Text>
       </TouchableOpacity>
-      <Image
+      {/* Logo image to go here in future */}
+      {/* <Image
         source={require("../../../assets/images/pin.png")}
         style={styles.logoImage}
-      />
+      /> */}
 
       <View>
         <Text style={{ top: 520, fontSize: 20 }}>Login</Text>

@@ -4,7 +4,7 @@ const postRoutesByUserId = (routeDetails, travel_mode, user_id) => {
   console.log(routeDetails, routeDetails.start_location_lat, travel_mode, user_id, "<<<<<<<< from postRoutesByUserId");
   return axios
     .post(
-      `https://gobygreen.onrender.com/api/users/${user_id}/user_routes`,
+      `https://go-by-green.onrender.com/api/users/${user_id}/user_routes`,
       {
         origin_address: routeDetails.start_address,
         destination_address: routeDetails.end_address,
