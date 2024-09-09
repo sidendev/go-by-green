@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "front_end",
-    "slug": "front_end",
+    "name": "go-by-green-expo",
+    "slug": "go-by-green-expo",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -23,7 +23,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-
     "plugins": [
       "expo-font",
       [

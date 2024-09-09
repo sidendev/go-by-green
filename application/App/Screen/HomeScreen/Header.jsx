@@ -19,11 +19,12 @@ export default function Header() {
   const { userId } = useContext(UserIdContext)
   const [userProfile, setUserProfile] = useState('')
   //set state to retrieve the profileurl as a profile icon / put default icon if not logged in
-  useEffect(() => {
-    fetchSpecificUser(userId).then((data) => {
-      setUserProfile(data.user.profile_url)
-    })
-  }, [userId])
+  // THIS USEEFFECT FOR GETTING USER PROFILE IMG IS NOT CURRENTLY SET UP
+  // useEffect(() => {
+  //   fetchSpecificUser(userId).then((data) => {
+  //     setUserProfile(data.user.profile_url)
+  //   })
+  // }, [userId])
 
   return (
     //   <Image source={require('../../../assets/images/profile-pic.jpg')}
