@@ -27,7 +27,7 @@ export default function SearchBar({ searchedLocation }) {
   }, [origin, destination]);
 
   return (
-    <View>
+    <View style={styles.container}>
       <View style={styles.inputContainer}>
         <FontAwesome6
           name="location-dot"
@@ -40,6 +40,14 @@ export default function SearchBar({ searchedLocation }) {
           placeholder="Origin"
           fetchDetails={true}
           enablePoweredByContainer={false}
+          styles={{
+            container: {
+              flex: 1,
+            },
+            textInputContainer: {
+              paddingRight: 10,
+            },
+          }}
           onPress={(data, details = null) => {
             let originCoordinates = {
               latitude: details?.geometry?.location.lat,
@@ -66,6 +74,14 @@ export default function SearchBar({ searchedLocation }) {
           placeholder="Destination"
           fetchDetails={true}
           enablePoweredByContainer={false}
+          styles={{
+            container: {
+              flex: 1,
+            },
+            textInputContainer: {
+              paddingRight: 10,
+            },
+          }}
           onPress={(data, details = null) => {
             let destinationCoordinates = {
               latitude: details?.geometry?.location.lat,
@@ -81,10 +97,10 @@ export default function SearchBar({ searchedLocation }) {
       </View>
 
       <View style={styles.pickerContainer}>
-        {/* <Text style={{ padding: 10 }}>Select Mode of Transport:</Text> */}
         <Picker
           selectedValue={mode}
           onValueChange={(itemValue) => setMode(itemValue)}
+          style={styles.picker}
         >
           <Picker.Item label="Walking" value="WALKING" />
           <Picker.Item label="Cycling" value="BICYCLING" />
@@ -96,24 +112,47 @@ export default function SearchBar({ searchedLocation }) {
 }
 
 const styles = StyleSheet.create({
-  inputContainer: {
-    display: "flex",
-    flexDirection: "row",
+  container: {
     marginTop: 15,
-    paddingHorizontal: 5,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
     backgroundColor: Colours.WHITE,
-    borderRadius: 6,
+    borderRadius: 20,
+    borderWidth: 3,
+    borderColor: Colours.PRIMARY,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    // overflow: 'hidden', // This will clip any content that exceeds the container
   },
   icon: {
-    paddingTop: 10,
+    paddingLeft: 15,
+    paddingRight: 10,
   },
-  boldText: {
-    fontWeight: "bold",
+  textInput: {
+    height: 50,
+    paddingRight: 10, // Add some padding on the right side
   },
   pickerContainer: {
-    marginTop: 15,
-    paddingHorizontal: 5,
     backgroundColor: Colours.WHITE,
-    borderRadius: 6,
+    borderRadius: 20,
+    borderWidth: 3,
+    borderColor: Colours.PRIMARY,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    height: 50,
+    justifyContent: 'center', // Center the picker vertically
+  },
+  picker: {
+    height: 50,
+    width: '100%',
   },
 });
