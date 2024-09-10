@@ -1,6 +1,6 @@
 // navigation/TabNavigation.js
-import { StyleSheet, Text, View } from "react-native";
-import React, { useState, useContext } from "react";
+import { StyleSheet } from "react-native";
+import React from "react";
 import ProfileScreen from "../Screen/ProfileScreen/ProfileScreen";
 import SavedRoutes from "../Screen/SavedRoutes/SavedRoutes";
 import HomeScreen from "../Screen/HomeScreen/HomeScreen";

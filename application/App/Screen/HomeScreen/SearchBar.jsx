@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { React, useState, useEffect } from "react";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
@@ -128,7 +128,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    // overflow: 'hidden', // This will clip any content that exceeds the container
   },
   icon: {
     paddingLeft: 15,
@@ -136,7 +135,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     height: 50,
-    paddingRight: 10, // Add some padding on the right side
+    paddingRight: 10,
   },
   pickerContainer: {
     backgroundColor: Colours.WHITE,
@@ -149,7 +148,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
     height: 50,
-    justifyContent: 'center', // Center the picker vertically
+    justifyContent: 'center',
   },
   picker: {
     height: 50,

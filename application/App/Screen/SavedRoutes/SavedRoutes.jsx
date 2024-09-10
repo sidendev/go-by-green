@@ -1,11 +1,10 @@
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Dimensions } from 'react-native'
-import React, { useEffect, useState, useContext, navigation } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { UserIdContext } from '../../Context/UserIdContext'
 import Colours from '../../Utils/Colours'
 import { getRoutesByUserId } from '../../../ApiCalls/UserRoutesAPI'
 import { UserContext } from '../../Context/UserContext'
 import { Card, Button, Icon } from 'react-native-elements'
-import ProfileScreen from '../ProfileScreen/ProfileScreen'
 import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window')
