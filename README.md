@@ -8,6 +8,8 @@ This project is a work in progress, initially developed as part of a group proje
 
 Original group project can be found at [https://github.com/HelloKt-8/GoByGreen](https://github.com/HelloKt-8/GoByGreen).
 
+![GoByGreen app Mockup](./application/assets/wide-mockup.webp)
+
 ## Project Structure
 
 GoByGreen is structured as a monorepo, containing both the backend API and the frontend mobile application. This architecture was chosen to facilitate future expansion to iOS and web versions.
