@@ -37,7 +37,7 @@ export default function Header() {
       </View>
       <View style={styles.logoContainer}>
         <Image
-          source={require('../../../assets/images/go-by-green-new-green.png')}
+          source={require('../../../assets/images/gobygreen-title.png')}
           style={styles.logo}
         />
       </View>
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 16,
-    backgroundColor: '#1C874C',
+    backgroundColor: '#00BF63',
     justifyContent: 'center',
     alignItems: 'center',
   },

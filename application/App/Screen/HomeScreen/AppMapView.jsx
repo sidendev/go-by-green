@@ -173,13 +173,15 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "25%",
     padding: 10,
+    backgroundColor: '#00BF63',
   },
   stepItem: {
     marginBottom: 10,
   },
   stepText: {
     fontSize: 16,
-    fontFamily: 'Poppins-Regular',
+    fontFamily: 'Poppins-SemiBold',
+    color: 'white',
   },
   co2Container: {
     position: 'absolute',
@@ -188,7 +190,7 @@ const styles = StyleSheet.create({
     width: 54,
     height: 54,
     borderRadius: 18,
-    backgroundColor: '#1C874C',
+    backgroundColor: '#00BF63',
     justifyContent: 'center',
     alignItems: 'center',
   },
