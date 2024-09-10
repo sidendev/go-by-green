@@ -37,13 +37,12 @@ export default function SavedRoutes() {
 
 
   return (
-    <ScrollView>
-
-      <Text style={{ fontFamily: 'Poppins-Bold', fontSize: 24, textAlign: 'center', paddingTop: 50, paddingBottom: 30 }}>Saved Routes</Text>
+    <View style={styles.container}>
+      <Text style={styles.headerText}>My Routes</Text>
 
 
       {user && userRoutes && userRoutes.length > 0 ? (
-        <View>
+        <ScrollView>
           {userRoutes.map((route, index) => {
             return (
               <View key={index}>
@@ -64,13 +63,18 @@ export default function SavedRoutes() {
                 </Card>
               </View>)
           })}
+        </ScrollView>
+      ) : (
+        <View style={styles.loginContainer}>
+          <TouchableOpacity onPress={handleLogIn}>
+            <Text style={styles.loginText}>
+              Please Log In To See Routes
+            </Text>
+          </TouchableOpacity>
         </View>
-      ) : (<TouchableOpacity onPress={handleLogIn}>
-        <Text style={styles.logoutText}>
-          Please Log In
-        </Text>
-      </TouchableOpacity>)}
-    </ScrollView>
+      )}
+
+    </View>
   )
 }
 
@@ -81,7 +85,7 @@ const styles = StyleSheet.create({
     marginRight: 100,
     width: width * 0.5,
     height: height * 0.5,
-    fontFamily: 'Poppins-Regular',
+    fontFamily: 'Poppins-semibold',
     color: Colours.BLACK,
     padding: 10,
     fontSize: 20,
@@ -90,5 +94,28 @@ const styles = StyleSheet.create({
   },
   titleText: {
     color: Colours.PRIMARY,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  headerText: {
+    fontFamily: 'Poppins-Bold',
+    fontSize: 24,
+    textAlign: 'center',
+    paddingTop: 50,
+    paddingBottom: 30,
+  },
+  loginContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loginText: {
+    fontFamily: 'Poppins-SemiBold',
+    fontSize: 20,
+    color: Colours.GOBYGREEN_GREEN,
+    textAlign: 'center',
+    paddingHorizontal: 20,
   },
 })
