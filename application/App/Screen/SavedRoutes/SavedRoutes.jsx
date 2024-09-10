@@ -105,6 +105,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingTop: 50,
     paddingBottom: 30,
+    color: Colours.GOBYGREEN_GREEN,
   },
   loginContainer: {
     flex: 1,

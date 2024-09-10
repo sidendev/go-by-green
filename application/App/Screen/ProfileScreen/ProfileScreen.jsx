@@ -28,7 +28,6 @@ export default function ProfileScreen() {
     findUser().then((data) => {
       setUsers(data.users)
     })
-    console.log(users, 'line 24<<<<<<<<<<<<<<<<<<')
   }, []);
 
   const checkingUser = () => {
@@ -41,16 +40,13 @@ export default function ProfileScreen() {
     users.map((user) => {
       if (user.username === userName && user.password === password) {
         userFoundArray.push(user)
-        console.log(user, '<<<<<<<<<<<<<<<< line37')
         userFound = true
       }
       return userFoundArray
     })
     if (userFound) {
-      console.log(userFoundArray, ' Line 41<<<<<<<<<<<<<<<,')
       setUser(userName)
       setUserId(userFoundArray[0].user_id)
-      console.log(userId, 'line 46 userId')
       setLogin(true)
       setUserName('')
       setPassword('')
@@ -63,68 +59,86 @@ export default function ProfileScreen() {
 
   return (
     !user ? (
-      <View>
-        <Text style={{ fontFamily: 'Poppins-Bold', fontSize: 24, textAlign: 'center', paddingTop: 50, paddingBottom: 30 }}>Login</Text>
-        <TextInput
-          style={{ fontFamily: 'Poppins-Regular', fontSize: 15, textAlign: 'center', paddingTop: 10, borderRadius: 15, marginLeft: 10, marginRight: 10, backgroundColor: '#d3d3d3' }}
-          label='Username'
-          placeholder='Enter your username'
-          value={userName}
-          onChangeText={setUserName}
-        />
-        <Text></Text>
-        <TextInput
-          style={{ fontFamily: 'Poppins-Regular', fontSize: 15, textAlign: 'center', paddingTop: 10, borderRadius: 15, marginLeft: 10, marginRight: 10, backgroundColor: '#d3d3d3' }}
-          label='Password'
-          placeholder='Insert password'
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry={true}
-
-
-        />
-        {login !== null && (
-          <View>
-            {login ? (
-              <Text></Text>
-            ) : (
-              <Text style={{ marginBottom: 2 }}>Please check login details</Text>
-            )}
-          </View>
+      <View style={styles.container}>
+        <Text style={styles.headerText}>Login</Text>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder='Enter your username'
+            value={userName}
+            onChangeText={setUserName}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder='Enter your password'
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={true}
+          />
+        </View>
+        {login === false && (
+          <Text style={styles.errorText}>Please check login details</Text>
         )}
-        <TouchableOpacity style={styles.button}
-          onPress={handleLogin}>
-          <Text
-            style={{
-              fontFamily: "outfit-SemiBold",
-              color: Colours.WHITE,
-              paddingLeft: 10,
-              paddingRight: 10,
-              fontSize: 25,
-              textAlign: 'center'
-            }}
-          >
-            Log in
-          </Text>
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <Text style={styles.buttonText}>Log in</Text>
         </TouchableOpacity>
-
-      </View>) : (<LoggedInProfile />)
-
+      </View>
+    ) : (
+      <LoggedInProfile />
+    )
   )
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colours.WHITE,
+    padding: 20,
+    justifyContent: 'center',
+  },
+  headerText: {
+    fontFamily: 'Poppins-Bold',
+    fontSize: 28,
+    color: Colours.GOBYGREEN_GREEN,
+    textAlign: 'center',
+    marginBottom: 30,
+  },
+  inputContainer: {
+    backgroundColor: Colours.WHITE,
+    borderRadius: 20,
+    borderWidth: 3,
+    borderColor: Colours.PRIMARY,
+    marginBottom: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  input: {
+    fontFamily: 'Poppins-SemiBold',
+    fontSize: 16,
+    padding: 15,
+    height: 55,
+  },
   button: {
-    width: width * 0.5, // 50% of the screen width
-    height: height * 0.08, // 8% of the screen height
-    padding: 10, // Reduced padding
-    backgroundColor: Colours.PRIMARY,
-    borderRadius: 25, // Reduced border radius
-    borderWidth: 2,
+    backgroundColor: Colours.GOBYGREEN_GREEN,
+    borderRadius: 25,
+    padding: 15,
     alignItems: 'center',
-    justifyContent: 'center', // Centers the content vertically
-    marginVertical: height * 0.02, // Vertical margin to position button
-    alignSelf: 'center', // Center the button horizontally
-    display: 'flex',
+    marginTop: 20,
+  },
+  buttonText: {
+    fontFamily: 'Poppins-SemiBold',
+    color: Colours.WHITE,
+    fontSize: 18,
+  },
+  errorText: {
+    fontFamily: 'Poppins-Regular',
+    color: 'red',
+    textAlign: 'center',
+    marginTop: 10,
   },
 });
